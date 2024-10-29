@@ -421,7 +421,107 @@
             height: 4px;
             background-color: #66fcf1;
             margin: 0 auto 20px;
+        }        /* Projects Section */
+        #projects h2
+        {
+            font-size: 38px;
+            color: #66fcf1;
+            margin-bottom: 20px;
+            text-align: center;
         }
+        .projects-grid
+        {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .project-box
+        {
+            background-color: #1F2833;
+            padding: 20px;
+            border-radius: 10px;
+            color: #c5c6c7;
+        }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .project-header h3
+        {
+            font-size: 24px;
+            color: #66fcf1;
+            margin: 0;
+        }
+
+        .project-date
+        {
+            font-size: 16px;
+            color: #c5c6c7;
+        }
+        .project-course
+        {
+            font-style: italic;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .project-description
+        {
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        .project-video
+        {
+            margin-top: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+/* Contact Me Section */
+#contact {
+    background-color: #0B0C10;
+    color: #e1e1e1;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+#contact h2 {
+    font-size: 38px;
+    color: #66fcf1;
+    margin-bottom: 20px;
+}
+
+#contact p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.contact-icons {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.contact-icons a {
+    color: #c5c6c7;
+    font-size: 48px;
+    transition: color 0.3s;
+}
+
+.contact-icons a:hover {
+    color: #66fcf1;
+}
+        /* Smooth Scrolling */
+        html
+        {
+            scroll-behavior: smooth;
+        }
+
+
 
     </style>
 </head>
@@ -451,9 +551,8 @@
 </nav>
     <!-- HOME -->
     <section id="home" class="section">
-        <h1>Welcome</h1>
-        <p>Introduction / Bio</p>
-    </section>
+        <h1>Welcome!</h1>
+        <p>Hello, I'm Tasha! I have an Associate of Science degree and am currently a second-year Computer Science student pursuing a Bachelor of Science. I'm an avid gamer with a strong interest in game development, blending technology and creativity within the gaming world.</p>    </section>
 
 <div class="accent-line"></div>
 
@@ -462,19 +561,19 @@
         <h2>About Me</h2>
         <div class="about-grid">
             <div class="about-box">
-                <img src="images/family.jpg" alt="Family" class="about-photo">
+                <img src="media/PhotoFamily.jpg" alt="Family" class="about-photo">
                 <h3>Family</h3>
-                <p> Write up about family</p>
+                <p>My family is made up of organized chaos, thanks to my husband, two kids, two dogs, and a cat who thinks he’s in charge. The kids keep us on our toes with their boundless energy, while the dogs alternate between being protectors and professional snack thieves. The cat? He’s a world-class napper who tolerates our existence—as long as we keep the food coming. It’s a full house, and every day’s an adventure (or a comedy) in our pet-filled, kid-powered circus!</p>
             </div>
             <div class="about-box">
-                <img src="images/passions.jpg" alt="Passions" class="about-photo">
+                <img src="media/PhotoRunning.JPG" alt="Passions" class="about-photo">
                 <h3>Passions</h3>
-                <p> Write up about passions</p>
+                <p>My life is a bit of a triathlon—except swap the cycling for paddleboarding, add gaming marathons with the family, and throw in a crafting session or two. With over 30 running medals from 5Ks to half marathons, I like to think I’m always just one good race away from a podium…or a nice nap. When I’m not on the move, I’m trying (and sometimes failing) new crafts, from knitting to DIY projects, which often results in more glue on me than on the project. All in all, it’s a fast-paced, fun-filled adventure that keeps life interesting!</p>
             </div>
             <div class="about-box">
-                <img src="images/escaperoom.jpg" alt="Escape Room Enthusiast" class="about-photo">
+                <img src="media/PhotoEscapeRoom.jpg" alt="Escape Room Enthusiast" class="about-photo">
                 <h3>Escape Room Enthusiast</h3>
-                <p> Write up about escape rooms</p>
+                <p>My husband and I are escape room enthusiasts (some might say addicts), having tackled every room in the Lower Mainland and Whistler, plus a few in Seattle when we’re up for a change of scenery. With a success rate over 90%, we like to think we’re pros at puzzling our way out—though occasionally, we bring the kids along for ‘hard mode.’ Nothing says teamwork like convincing a 10-year-old not to press every button they see! If there’s a challenge to escape, we’re there, armed with teamwork, and a little bit of stubbornness.</p>
             </div>
         </div>
     </section>
@@ -562,6 +661,7 @@
                     <div class="hex">
                         <img src="logos/Excel.png" alt="Excel" class="custom-icon">
                     </div>
+                </a>
             </div>
         </div>
     </section>
@@ -569,66 +669,165 @@
 
     <div class="accent-line"></div>
 
-    <!-- EDUCATION -->
-<section id="education" class="section">
-    <h2>Education</h2>
-    <div class="education-grid">
-        <div class="education-box">
-            <div class="education-header">
-                <h3>Program</h3>
-                <span class="education-date">Dates</span>
+    <section id="education" class="section">
+        <h2>Education</h2>
+        <div class="education-grid">
+            <div class="education-box">
+                <div class="education-header">
+                    <h3>Bachelor of Science, Computer Science</h3>
+                    <span class="education-date">2024 - Present</span>
+                </div>
+                <p class="education-institution">Simon Fraser University</p>
+                <p class="education-description">
+                    Currently pursuing a Bachelor of Science in Computer Science, with a focus on software engineering, human computer interactions and graphic design. The curriculum provides hands-on experience with coding, project management, and real-world applications of programming concepts.
+                </p>
             </div>
-            <p class="education-institution">School</p>
-            <p class="education-description">
-                Description
-            </p>
-        </div>
-    </div>
-</section>
-
-<div class="accent-line"></div>
-
-<!-- EXPERIENCE -->
-<section id="experience" class="section">
-    <h2>Experience</h2>
-    <div class="experience-grid">
-
-        <!-- WORK -->
-        <div class="experience-box">
-            <div class="experience-header">
-                <h3>Job</h3>
-                <span class="experience-date">Date</span>
+            <div class="education-box">
+                <div class="education-header">
+                    <h3>Associate of Science, with Honours</h3>
+                    <span class="education-date">2022 - 2024</span>
+                </div>
+                <p class="education-institution">Douglas College</p>
+                <p class="education-description">
+                    Completed an Associate of Science degree, building a strong foundation in mathematics, natural sciences, and introductory programming, which paved the way for advanced studies in computer science. I graduated on the Dean's List, maintaining a high GPA and earning recognition for academic excellence.
+                </p>
             </div>
-            <p class="experience-institution">Company</p>
-            <p class="experience-description">
-                Description
-            </p>
+            <div class="education-box">
+                <div class="education-header">
+                    <h3>Project Management Certificate</h3>
+                    <span class="education-date">2021</span>
+                </div>
+                <p class="education-institution">Simon Fraser University</p>
+                <p class="education-description">
+                    Completed the Project Management Certificate at Simon Fraser University, where I gained hands-on experience with project management tools and techniques. The program covered key skills, including project planning, risk management, team leadership, and effective communication strategies. This training has equipped me with the tools and knowledge to effectively oversee and execute projects from start to finish, ensuring alignment with organizational goals and facilitating collaborative success.
+                </p>
+            </div>
         </div>
-    </div>
-</section>
-<!-- JavaScript for Active Navigation -->
+    </section>
+    <div class="accent-line"></div>
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+        <h2>Experience</h2>
+        <div class="experience-grid">
+            <!-- Work Experience -->
+            <div class="experience-box">
+                <div class="experience-header">
+                    <h3>Etsy Entrepreneur</h3>
+                    <span class="experience-date">August 2017 - May 2020</span>
+                </div>
+                <p class="experience-institution">Etsy</p>
+                <p class="experience-description">
+                    As the sole owner and operator of a customizable product Etsy shop, I managed every aspect of the business from start to finish. I handled all advertising and marketing efforts, ensuring the shop reached the right audience through social media and in-person events like local markets. Each product, from shirts and bags to cups and pillows, was thoughtfully planned, designed, and created by me to reflect customer needs and trends. I organized and maintained the shop’s online presence, regularly updating listings, managing the website, and coordinating sales. I also handled all payment processing, budgeting, and inventory tracking to keep the business running smoothly. Overseeing everything from design to delivery equipped me with a wide range of skills in digital design, production, e-commerce, and business management, all while maintaining high standards of quality and customer satisfaction.
+                </p>
+            </div>
+
+            <!-- Volunteer Experience -->
+            <div class="experience-box">
+                <div class="experience-header">
+                    <h3>Parent Advisory Council</h3>
+                    <span class="experience-date">August 2019 - Present</span>
+                </div>
+                <p class="experience-institution">Local School</p>
+                <p class="experience-description">
+                    On the Parent Advisory Council, I served as Chair from 2020 to 2023 and currently hold the position of Treasurer. During my tenure as Chair, I led meetings, organized activities and events, and acted as a liaison between parents and school staff, ensuring open communication and collaboration. As Treasurer, I am responsible for drafting budgets, managing payments, and overseeing the council’s funds. In both roles, I have been actively involved in the school community—helping to lead fundraising initiatives, bringing in volunteers, and supporting various projects to enhance the school environment for students, parents, and staff alike.
+                </p>
+            </div>
+        </div>
+    </section>
+
+        <div class="accent-line"></div>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <h2>Projects</h2>
+            <div class="projects-grid">
+                <div class="project-box">
+                    <div class="project-header">
+                        <h3>VR Video Game Museum Exhibit</h3>
+                        <span class="project-date">2024</span>
+                    </div>
+                    <p class="project-course">Course: Applied Project in Computing Science, Douglas College</p>
+                    <p class="project-description">
+                        Collaborative project between Douglas College (Canada) and Universidad Tecnológica El Retoño (Mexico) to create a WebXR VR game using Wonderland Engine. This exhibit allows users to explore video game history in an interactive, immersive environment.
+                    </p>
+                    <div class="project-video">
+                        <video controls width="100%">
+                            <source src="media/VideoGameMuseum.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="project-box">
+                    <div class="project-header">
+                        <h3>VR Haunted House</h3>
+                        <span class="project-date">2023</span>
+                    </div>
+                    <p class="project-course">Course: Game Development, Douglas College</p>
+                    <p class="project-description">
+                        Designed and developed a Haunted House VR game to give a fully immersive user experience using Unreal Engine. This project explored VR interactivity, lighting, and sound design to create an eerie atmosphere for users.
+                    </p>
+                    <div class="project-video">
+                        <video controls width="100%">
+                            <source src="media/VideoHauntedHouse.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="project-box">
+                    <div class="project-header">
+                        <h3>Study Buddy</h3>
+                        <span class="project-date">2024</span>
+                    </div>
+                    <p class="project-course">Course: Software Engineering, Simon Fraser University</p>
+                    <p class="project-description">
+                        Designed and developed a website to help students focus on their studies, incorporating features such as scheduling tools, study tips, and flashcard generation powered by AI. This project utilized the Gemini AI API and Google Calendar API for enhanced functionality.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <div class="accent-line"></div>
+
+        <!-- Contact Me Section -->
+        <section id="contact" class="section">
+            <h2>Contact Me</h2>
+            <p>Feel free to reach out through LinkedIn or check out my work on GitHub!</p>
+            <div class="contact-icons">
+                <a href="https://github.com/YourGitHubUsername" target="_blank" title="GitHub">
+                    <i class="devicon-github-original"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/YourLinkedInUsername/" target="_blank" title="LinkedIn">
+                    <i class="devicon-linkedin-plain"></i>
+                </a>
+            </div>
+        </section>
+
+
+    <!-- JavaScript for Active Navigation -->
 <script>
-    window.addEventListener("scroll", () => {
-        const sections = document.querySelectorAll(".section");
-        const navLinks = document.querySelectorAll("#navbar ul li a");
+        window.addEventListener("scroll", () => {
+    const sections = document.querySelectorAll(".section");
+    const navLinks = document.querySelectorAll("#navbar ul li a");
 
-        let currentSection = "";
+    let currentSection = "";
 
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (pageYOffset >= sectionTop - sectionHeight / 3) {
-                currentSection = section.getAttribute("id");
-            }
-        });
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
 
-        navLinks.forEach(link => {
-            link.classList.remove("active");
-            if (link.getAttribute("href").includes(currentSection)) {
-                link.classList.add("active");
-            }
-        });
+        // Check if current section is within the viewport
+        if (window.scrollY >= sectionTop - sectionHeight / 2 && window.scrollY < sectionTop + sectionHeight - sectionHeight / 2) {
+            currentSection = section.getAttribute("id");
+        }
     });
+
+    navLinks.forEach(link => {
+        link.classList.remove("highlight");
+        if (link.getAttribute("href").includes(currentSection)) {
+            link.classList.add("highlight");
+        }
+    });
+});
 </script>
 
 </body>
