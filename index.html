@@ -22,6 +22,65 @@
             overflow-x: hidden;
         }
 
+        /* NAVIGATION BAR */
+        #navbar
+        {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1F2833;
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main navigation links centered */
+        .nav-links ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links ul li a {
+            text-decoration: none;
+            color: #c5c6c7;
+            font-size: 18px;
+        }
+
+        /* Social icons */
+        .social-icons
+        {
+            position: absolute;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a
+        {
+            color: #66fcf1;
+            font-size: 24px;
+            text-decoration: none;
+        }
+        #navbar a.highlight
+        {
+            color: #66fcf1;
+            font-weight: bold;
+        }
+        #navbar ul li a:hover,
+        #navbar ul li a.active
+        {
+            color: #66fcf1;
+            font-weight: bold;
+        }
+
+
         /* HOME */
         #home
         {
@@ -368,6 +427,28 @@
 </head>
 
 <body>
+        <!-- Navigation Bar -->
+<nav id="navbar">
+    <div class="nav-links">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact Me</a></li>
+        </ul>
+    </div>
+    <div class="social-icons">
+        <a href="https://github.com/TashaGandevia" target="_blank" title="GitHub">
+            <i class="devicon-github-original"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/Tasha-Gandevia/" target="_blank" title="LinkedIn">
+            <i class="devicon-linkedin-plain"></i>
+        </a>
+    </div>
+</nav>
     <!-- HOME -->
     <section id="home" class="section">
         <h1>Welcome</h1>
@@ -525,5 +606,29 @@
         </div>
     </div>
 </section>
+<!-- JavaScript for Active Navigation -->
+<script>
+    window.addEventListener("scroll", () => {
+        const sections = document.querySelectorAll(".section");
+        const navLinks = document.querySelectorAll("#navbar ul li a");
+
+        let currentSection = "";
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (pageYOffset >= sectionTop - sectionHeight / 3) {
+                currentSection = section.getAttribute("id");
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove("active");
+            if (link.getAttribute("href").includes(currentSection)) {
+                link.classList.add("active");
+            }
+        });
+    });
+</script>
 
 </body>
