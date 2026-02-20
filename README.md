@@ -4,17 +4,13 @@ Personal Portfolio
 <h1 align="center">Hi 👋, I'm Tasha</h1>
 <h3 align="center">I have an Associate of Science degree and am currently a second-year Computer Science student pursuing a Bachelor of Science. I'm an avid gamer with a strong interest in game development, blending technology and creativity within the gaming world.</h3>
 
-<p align="left"> <img src="https://komarev.com/ghpvc/?username=tashagandevia&label=Profile%20views&color=0e75b6&style=flat" alt="tashagandevia" /> </p>
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=tashagandevia&label=Profile%20views&color=0e75b6&style=flat" alt="profile views" /> </p>
 
-<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=tashagandevia" alt="tashagandevia" /></a> </p>
+<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=TashaGandevia" alt="Trophy Case" /></a> </p>
 
-- 🔭 I’m currently studying **at Simon Fraser University**
+- I’m currently studying **at Simon Fraser University**
 
-- 🌱 I’m currently learning **backend and database**
-
-- 👯 I’m looking forward to working as **a game developer**
-
-- 💬 Ask me about **Wonderland and Unreal game engines!**
+- I’m looking forward to working as **a game developer**
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
