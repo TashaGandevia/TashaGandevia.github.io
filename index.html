@@ -28,21 +28,61 @@
     />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- CSS -->
     <style>
+      /* ===== RESET & CUSTOM PROPERTIES ===== */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
+
+      :root {
+        --bg-deep:         #08081a;
+        --bg-card:         #0d0d26;
+        --bg-card-hover:   #111134;
+        --purple:          #8b5cf6;
+        --purple-bright:   #a78bfa;
+        --purple-dim:      rgba(139, 92, 246, 0.12);
+        --teal:            #14b8a6;
+        --teal-bright:     #2dd4bf;
+        --teal-dim:        rgba(20, 184, 166, 0.12);
+        --text:            #e2e8f0;
+        --text-muted:      #94a3b8;
+        --border:          rgba(139, 92, 246, 0.22);
+        --border-teal:     rgba(20, 184, 166, 0.22);
+        --glow-purple:     0 0 28px rgba(139, 92, 246, 0.25);
+        --glow-teal:       0 0 28px rgba(20, 184, 166, 0.25);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         font-family: Poppins, sans-serif;
-        color: #c5c6c7;
-        background-color: #0b0c10;
+        color: var(--text);
+        background-color: var(--bg-deep);
         overflow-x: hidden;
       }
 
-      /* NAVIGATION BAR */
+      /* ===== CONSTELLATION CANVAS ===== */
+      #constellation-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* ===== PAGE CONTENT LAYER ===== */
+      #page-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ===== NAVIGATION BAR ===== */
       #navbar {
         position: fixed;
         top: 0;
@@ -51,153 +91,254 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #1f2833;
-        padding: 10px 20px;
+        background: rgba(8, 8, 26, 0.82);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        padding: 12px 20px;
         z-index: 1000;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid var(--border);
       }
+
       .nav-links ul {
         display: flex;
-        gap: 20px;
+        gap: 24px;
         list-style: none;
-        margin: 0;
-        padding: 0;
       }
+
       .nav-links ul li a {
         text-decoration: none;
-        color: #c5c6c7;
-        font-size: 18px;
+        color: var(--text-muted);
+        font-size: 15px;
+        letter-spacing: 0.4px;
+        transition: color 0.25s, text-shadow 0.25s;
       }
+
+      .nav-links ul li a:hover,
+      .nav-links ul li a.highlight {
+        color: var(--teal-bright);
+        text-shadow: 0 0 10px rgba(45, 212, 191, 0.55);
+        font-weight: 600;
+      }
+
       .social-icons {
         position: absolute;
         right: 40px;
         display: flex;
-        gap: 15px;
-      }
-      .social-icons a {
-        color: #66fcf1;
-        font-size: 24px;
-        text-decoration: none;
-      }
-      #navbar a.highlight {
-        color: #66fcf1;
-        font-weight: bold;
-      }
-      #navbar ul li a:hover,
-      #navbar ul li a.active {
-        color: #66fcf1;
-        font-weight: bold;
-      }
-      /* HOME */
-      #home {
-        padding-top: 80px;
-        text-align: center;
-      }
-      .about-box {
-        background-color: #1f2833;
-        padding: 50px 0;
-      }
-      #home h1 {
-        font-size: 38px;
-        color: #66fcf1;
-        margin-bottom: 15px;
-        text-align: center;
-      }
-      #home p {
-        text-align: center;
-        font-size: 20px;
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
+        gap: 16px;
       }
 
-      /* ABOUT */
-      #about h2 {
-        font-size: 38px;
-        color: #66fcf1;
-        margin-bottom: 20px;
-        text-align: center;
+      .social-icons a {
+        color: var(--purple-bright);
+        font-size: 22px;
+        text-decoration: none;
+        transition: color 0.25s, text-shadow 0.25s;
       }
+
+      .social-icons a:hover {
+        color: var(--teal-bright);
+        text-shadow: 0 0 12px rgba(45, 212, 191, 0.6);
+      }
+
+      /* ===== HERO / HOME ===== */
+      #home {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 100px 20px 80px;
+      }
+
+      #home h1 {
+        font-size: 58px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 22px;
+        background: linear-gradient(135deg, var(--purple-bright) 20%, var(--teal-bright) 80%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 22px rgba(139, 92, 246, 0.45));
+        animation: fadeInUp 0.9s ease both;
+      }
+
+      #home p {
+        font-size: 18px;
+        max-width: 620px;
+        color: var(--text-muted);
+        line-height: 1.85;
+        animation: fadeInUp 0.9s 0.2s ease both;
+      }
+
+      .scroll-indicator {
+        position: absolute;
+        bottom: 36px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-muted);
+        font-size: 10px;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        animation: scrollBounce 2.2s ease-in-out infinite;
+        opacity: 0.7;
+      }
+
+      .scroll-indicator .chevron {
+        width: 14px;
+        height: 14px;
+        border-right: 2px solid var(--teal);
+        border-bottom: 2px solid var(--teal);
+        transform: rotate(45deg);
+      }
+
+      @keyframes scrollBounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50%       { transform: translateX(-50%) translateY(9px); }
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* ===== SECTIONS ===== */
+      .section {
+        padding: 64px 20px;
+      }
+
+      /* ===== GRADIENT HEADINGS ===== */
+      h2 {
+        font-size: 38px;
+        font-weight: 700;
+        margin-bottom: 32px;
+        text-align: center;
+        background: linear-gradient(135deg, var(--purple-bright), var(--teal-bright));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ===== ACCENT LINE ===== */
+      .accent-line {
+        position: relative;
+        z-index: 1;
+        width: 55%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--purple),
+          var(--teal),
+          transparent
+        );
+        margin: 0 auto 10px;
+        opacity: 0.7;
+      }
+
+      /* ===== ABOUT ===== */
+      #about {
+        background: rgba(8, 8, 26, 0.6);
+      }
+
       .about-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
-        max-width: 900px;
+        max-width: 960px;
         margin: 0 auto;
-        padding-bottom: 10px;
-        grid-auto-rows: minmax(auto, max-content);
       }
+
       .about-box {
-        background-color: #1f2833;
-        border-radius: 10px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
-        color: #c5c6c7;
-      }
-      .about-box h3 {
-        font-size: 24px;
-        color: #66fcf1;
-        margin-bottom: 8px;
-        text-align: center;
-        min-height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .about-box p {
-        text-align: center;
-        font-size: 16px;
-        line-height: 1.4;
-        margin-top: 10px; /* Add consistent margin from title */
-      }
-      /* ChatGPT:last-child is a pseudo-class that selects the last child of an element */
-      .about-box:not(:last-child) {
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
-      }
-      .about-photo {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-        border-radius: 8px;
-        margin-bottom: 15px;
-      }
-      .about-box h3 {
-        font-size: 24px;
-        color: #66fcf1;
-        margin-bottom: 8px;
-        text-align: center;
-      }
-      .about-box p {
-        text-align: center;
-        font-size: 18px;
-        line-height: 1.4;
+        padding: 22px;
+        color: var(--text-muted);
+        transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
       }
 
-      /* SKILLS */
-      #skills h2 {
-        font-size: 38px;
-        color: #66fcf1;
-        margin-bottom: 20px;
+      .about-box:hover {
+        border-color: var(--purple);
+        box-shadow: var(--glow-purple);
+        background: var(--bg-card-hover);
+      }
+
+      .about-photo {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 14px;
+      }
+
+      .about-box h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--teal-bright);
+        margin-bottom: 10px;
         text-align: center;
       }
-      #skills {
-        background-color: #0b0c10;
-        padding: 20px;
+
+      .about-box p {
+        text-align: center;
+        font-size: 13.5px;
+        line-height: 1.65;
       }
+
+      /* ===== SKILLS ===== */
+      #skills {
+        padding: 64px 20px;
+      }
+
       .hex-grid {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
         max-width: 800px;
         text-align: center;
         margin: 0 auto;
       }
+
+      .section-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--purple-bright);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+
+      .row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+
+      .hex-grid a {
+        text-decoration: none;
+        color: inherit;
+      }
+
       .hex {
-        width: 100px;
-        height: 100px;
-        background-color: #45a29e;
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(
+          145deg,
+          rgba(139, 92, 246, 0.18),
+          rgba(20, 184, 166, 0.12)
+        );
+        border: 1px solid var(--border);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -209,737 +350,804 @@
           25% 93.3%,
           0% 50%
         );
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, background 0.3s;
       }
-      /* ChatGPT: text-decoration: none removes underline for link */
-      .hex-grid a {
-        text-decoration: none;
-        color: inherit;
-      }
-      .hex-grid a:hover .hex {
-        transform: scale(1.2);
-      }
+
+      .hex-grid a:hover .hex,
       .hex:hover {
-        transform: scale(1.2);
-        background-color: #66fcf1;
+        transform: scale(1.14);
+        background: linear-gradient(
+          145deg,
+          rgba(139, 92, 246, 0.55),
+          rgba(20, 184, 166, 0.45)
+        );
       }
+
       .hex .devicon {
-        font-size: 50px;
+        font-size: 44px;
         color: #fff;
       }
-      .row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 10px;
-      }
-      .section-title {
-        font-size: 24px;
-        color: #d8d9da;
-        margin-bottom: 5px;
-        text-align: center;
-      }
+
       .icon {
-        width: 50px;
-        height: 50px;
+        width: 44px;
+        height: 44px;
         color: #fff;
       }
+
       .custom-icon {
-        width: 50px;
-        height: 50px;
+        width: 44px;
+        height: 44px;
         object-fit: contain;
       }
 
-      /* EDUCATION */
-      #education h2 {
-        font-size: 38px;
-        color: #66fcf1;
-        margin-bottom: 20px;
-        text-align: center;
-      }
-      .education-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      .education-box {
-        background-color: #1f2833;
-        padding: 20px;
-        border-radius: 10px;
-        color: #c5c6c7;
-      }
-      .education-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .education-header h3 {
-        font-size: 24px;
-        color: #66fcf1;
-        margin: 0;
-      }
-      .education-date {
-        font-size: 18px;
-        color: #e1e1e1;
-      }
-      .education-institution {
-        font-style: italic;
-        font-size: 18px;
-        color: #e1e1e1;
-      }
-      .education-description {
-        font-size: 16px;
-        line-height: 1.4;
-      }
-
-      /* EXPERIENCE */
-      #experience h2 {
-        font-size: 38px;
-        color: #66fcf1;
-        margin-bottom: 20px;
-        text-align: center;
-      }
-      .experience-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      .experience-box {
-        background-color: #1f2833;
-        padding: 20px;
-        border-radius: 10px;
-        color: #c5c6c7;
-      }
-      .experience-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      .experience-header h3 {
-        font-size: 24px;
-        color: #66fcf1;
-        margin: 0;
-      }
-      .experience-date {
-        font-size: 18px;
-        color: #c5c6c7;
-      }
-      .experience-institution {
-        font-style: italic;
-        font-size: 18px;
-        margin-bottom: 10px;
-      }
-      .experience-description {
-        font-size: 16px;
-        line-height: 1.4;
-      }
-
-      /* PROJECTS */
-      #projects h2 {
-        font-size: 38px;
-        color: #66fcf1;
-        margin-bottom: 20px;
-        text-align: center;
-      }
+      /* ===== CARDS: EDUCATION / EXPERIENCE / PROJECTS ===== */
+      .education-grid,
+      .experience-grid,
       .projects-grid {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
         max-width: 800px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 0 0 20px;
       }
+
+      .education-box,
+      .experience-box,
       .project-box {
-        background-color: #1f2833;
-        padding: 20px;
-        border-radius: 10px;
-        color: #c5c6c7;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        color: var(--text-muted);
+        transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
       }
+
+      .education-box:hover,
+      .experience-box:hover,
+      .project-box:hover {
+        border-color: var(--purple);
+        box-shadow: var(--glow-purple);
+        background: var(--bg-card-hover);
+      }
+
+      .education-header,
+      .experience-header,
       .project-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
+        align-items: flex-start;
+        margin-bottom: 6px;
+        gap: 12px;
       }
 
+      .education-header h3,
+      .experience-header h3,
       .project-header h3 {
-        font-size: 24px;
-        color: #66fcf1;
+        font-size: 19px;
+        font-weight: 600;
+        color: var(--purple-bright);
         margin: 0;
       }
 
+      .education-date,
+      .experience-date,
       .project-date {
-        font-size: 16px;
-        color: #c5c6c7;
+        font-size: 13px;
+        color: var(--teal);
+        white-space: nowrap;
+        padding-top: 3px;
       }
+
+      .education-institution,
+      .experience-institution {
+        font-style: italic;
+        font-size: 14px;
+        color: var(--teal-bright);
+        margin-bottom: 10px;
+        opacity: 0.85;
+      }
+
+      .education-description,
+      .experience-description,
+      .project-description {
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
       .project-course {
         font-style: italic;
-        font-size: 18px;
-        margin-bottom: 10px;
+        font-size: 14px;
+        color: var(--teal-bright);
+        margin-bottom: 8px;
+        opacity: 0.85;
       }
-      .project-description {
-        font-size: 16px;
-        line-height: 1.4;
+
+      .project-course a {
+        color: var(--teal-bright);
+        text-decoration: underline;
+        text-underline-offset: 3px;
       }
+
       .project-video {
-        margin-top: 10px;
+        margin-top: 16px;
         border-radius: 10px;
         overflow: hidden;
+        border: 1px solid var(--border-teal);
       }
 
-      /* ACCENT LINE */
-      .accent-line {
-        width: 60%;
-        height: 4px;
-        background-color: #66fcf1;
-        margin: 0 auto 20px;
-      }
-
-      /* CONTACT ME */
+      /* ===== CONTACT ===== */
       #contact {
-        background-color: #0b0c10;
-        color: #e1e1e1;
         text-align: center;
-        padding: 40px 20px;
-      }
-
-      #contact h2 {
-        font-size: 38px;
-        color: #66fcf1;
-        margin-bottom: 20px;
+        padding: 64px 20px;
       }
 
       #contact p {
-        font-size: 18px;
-        margin-bottom: 30px;
+        font-size: 16px;
+        color: var(--text-muted);
+        margin-bottom: 32px;
       }
+
       .contact-icons {
         display: flex;
         justify-content: center;
-        gap: 40px;
-        text-decoration: none;
-      }
-      .contact-icons a {
-        color: #66fcf1;
-        font-size: 48px;
-        transition: color 0.3s;
-        text-decoration: none;
-      }
-      .contact-icons a:hover {
-        color: #c5c6c7;
+        gap: 44px;
       }
 
-      /* SMOOTH SCROLLING */
-      html {
-        scroll-behavior: smooth;
+      .contact-icons a {
+        color: var(--purple-bright);
+        font-size: 48px;
+        text-decoration: none;
+        transition: color 0.3s, text-shadow 0.3s;
+      }
+
+      .contact-icons a:hover {
+        color: var(--teal-bright);
+        text-shadow: 0 0 18px rgba(45, 212, 191, 0.55);
       }
     </style>
   </head>
 
   <body>
-    <!-- Navigation Bar -->
-    <nav id="navbar">
-      <div class="nav-links">
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#education">Education</a></li>
-          <li><a href="#experience">Experience</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact Me</a></li>
-        </ul>
-      </div>
-      <div class="social-icons">
-        <a
-          href="https://github.com/TashaGandevia"
-          target="_blank"
-          title="GitHub"
-        >
-          <i class="devicon-github-original"></i>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/Tasha-Gandevia/"
-          target="_blank"
-          title="LinkedIn"
-        >
-          <i class="devicon-linkedin-plain"></i>
-        </a>
-      </div>
-    </nav>
-    <!-- HOME -->
-    <section id="home" class="section">
-      <h1>Welcome!</h1>
-      <p>
-        Hello, I'm Tasha! I have an Associate of Science degree and am currently
-        a second-year Computer Science student pursuing a Bachelor of Science.
-        I'm an avid gamer with a strong interest in game development, blending
-        technology and creativity within the gaming world.
-      </p>
-    </section>
+    <!-- Constellation Background -->
+    <canvas id="constellation-canvas"></canvas>
 
-    <div class="accent-line"></div>
-
-    <!-- ABOUT -->
-    <section id="about" class="section">
-      <h2>About Me</h2>
-      <div class="about-grid">
-        <div class="about-box">
-          <img src="media/PhotoFamily.jpg" alt="Family" class="about-photo" />
-          <h3>Family</h3>
-          <p>
-            My family is made up of organized chaos, thanks to my husband, two
-            kids, two dogs, and a cat who thinks he’s in charge. The kids keep
-            us on our toes with their boundless energy, while the dogs alternate
-            between being protectors and professional snack thieves. The cat?
-            He’s a world-class napper who tolerates our existence—as long as we
-            keep the food coming. It’s a full house, and every day’s an
-            adventure (or a comedy) in our pet-filled, kid-powered circus!
-          </p>
+    <div id="page-content">
+      <!-- Navigation Bar -->
+      <nav id="navbar">
+        <div class="nav-links">
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact Me</a></li>
+          </ul>
         </div>
-        <div class="about-box">
-          <img
-            src="media/PhotoRunning.JPG"
-            alt="Passions"
-            class="about-photo"
-          />
-          <h3>Passions</h3>
-          <p>
-            My life is a bit of a triathlon—except swap the cycling for
-            paddleboarding, add gaming marathons with the family, and throw in a
-            crafting session or two. With over 30 running medals from 5Ks to
-            half marathons, I like to think I’m always just one good race away
-            from a podium…or a nice nap. When I’m not on the move, I’m trying
-            (and sometimes failing) new crafts, from knitting to DIY projects,
-            which often results in more glue on me than on the project. All in
-            all, it’s a fast-paced, fun-filled adventure that keeps life
-            interesting!
-          </p>
-        </div>
-        <div class="about-box">
-          <img
-            src="media/PhotoEscapeRoom.jpg"
-            alt="Escape Room Enthusiast"
-            class="about-photo"
-          />
-          <h3>Escape Room Enthusiast</h3>
-          <p>
-            My husband and I are escape room enthusiasts (some might say
-            addicts), having tackled every room in the Lower Mainland and
-            Whistler, plus a few in Seattle when we’re up for a change of
-            scenery. With a success rate over 90%, we like to think we’re pros
-            at puzzling our way out—though occasionally, we bring the kids along
-            for ‘hard mode.’ Nothing says teamwork like convincing a 10-year-old
-            not to press every button they see! If there’s a challenge to
-            escape, we’re there, armed with teamwork, and a little bit of
-            stubbornness.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <div class="accent-line"></div>
-
-    <!-- SKILLS -->
-    <section id="skills" class="section">
-      <h2>Skills</h2>
-      <div class="hex-grid">
-        <!-- Languages Row -->
-        <div class="section-title">Languages</div>
-        <div class="row">
+        <div class="social-icons">
           <a
-            href="https://www.cplusplus.com/doc/tutorial/"
+            href="https://github.com/TashaGandevia"
             target="_blank"
-            title="C++"
+            title="GitHub"
           >
-            <div class="hex">
-              <i class="devicon-cplusplus-plain devicon"></i>
-            </div>
+            <i class="devicon-github-original"></i>
           </a>
           <a
-            href="https://www.javascript.com"
+            href="https://www.linkedin.com/in/Tasha-Gandevia/"
             target="_blank"
-            title="JavaScript"
+            title="LinkedIn"
           >
-            <div class="hex">
-              <i class="devicon-javascript-plain devicon"></i>
+            <i class="devicon-linkedin-plain"></i>
+          </a>
+        </div>
+      </nav>
+
+      <!-- HOME -->
+      <section id="home" class="section">
+        <h1>Welcome!</h1>
+        <p>
+          Hello, I'm Tasha! I have an Associate of Science degree and am currently
+          a second-year Computer Science student pursuing a Bachelor of Science.
+          I'm an avid gamer with a strong interest in game development, blending
+          technology and creativity within the gaming world.
+        </p>
+        <div class="scroll-indicator">
+          <span>Scroll</span>
+          <div class="chevron"></div>
+        </div>
+      </section>
+
+      <div class="accent-line"></div>
+
+      <!-- ABOUT -->
+      <section id="about" class="section">
+        <h2>About Me</h2>
+        <div class="about-grid">
+          <div class="about-box">
+            <img src="media/PhotoFamily.jpg" alt="Family" class="about-photo" />
+            <h3>Family</h3>
+            <p>
+              My family is made up of organized chaos, thanks to my husband, two
+              kids, two dogs, and a cat who thinks he's in charge. The kids keep
+              us on our toes with their boundless energy, while the dogs alternate
+              between being protectors and professional snack thieves. The cat?
+              He's a world-class napper who tolerates our existence—as long as we
+              keep the food coming. It's a full house, and every day's an
+              adventure (or a comedy) in our pet-filled, kid-powered circus!
+            </p>
+          </div>
+          <div class="about-box">
+            <img
+              src="media/PhotoRunning.JPG"
+              alt="Passions"
+              class="about-photo"
+            />
+            <h3>Passions</h3>
+            <p>
+              My life is a bit of a triathlon—except swap the cycling for
+              paddleboarding, add gaming marathons with the family, and throw in a
+              crafting session or two. With over 30 running medals from 5Ks to
+              half marathons, I like to think I'm always just one good race away
+              from a podium…or a nice nap. When I'm not on the move, I'm trying
+              (and sometimes failing) new crafts, from knitting to DIY projects,
+              which often results in more glue on me than on the project. All in
+              all, it's a fast-paced, fun-filled adventure that keeps life
+              interesting!
+            </p>
+          </div>
+          <div class="about-box">
+            <img
+              src="media/PhotoEscapeRoom.jpg"
+              alt="Escape Room Enthusiast"
+              class="about-photo"
+            />
+            <h3>Escape Room Enthusiast</h3>
+            <p>
+              My husband and I are escape room enthusiasts (some might say
+              addicts), having tackled every room in the Lower Mainland and
+              Whistler, plus a few in Seattle when we're up for a change of
+              scenery. With a success rate over 90%, we like to think we're pros
+              at puzzling our way out—though occasionally, we bring the kids along
+              for 'hard mode.' Nothing says teamwork like convincing a 10-year-old
+              not to press every button they see! If there's a challenge to
+              escape, we're there, armed with teamwork, and a little bit of
+              stubbornness.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="accent-line"></div>
+
+      <!-- SKILLS -->
+      <section id="skills" class="section">
+        <h2>Skills</h2>
+        <div class="hex-grid">
+          <!-- Languages Row -->
+          <div class="section-title">Languages</div>
+          <div class="row">
+            <a
+              href="https://www.cplusplus.com/doc/tutorial/"
+              target="_blank"
+              title="C++"
+            >
+              <div class="hex">
+                <i class="devicon-cplusplus-plain devicon"></i>
+              </div>
+            </a>
+            <a
+              href="https://www.javascript.com"
+              target="_blank"
+              title="JavaScript"
+            >
+              <div class="hex">
+                <i class="devicon-javascript-plain devicon"></i>
+              </div>
+            </a>
+            <a
+              href="https://www.typescriptlang.org"
+              target="_blank"
+              title="TypeScript"
+            >
+              <div class="hex">
+                <i class="devicon-typescript-plain devicon"></i>
+              </div>
+            </a>
+            <a href="https://html.com/document/" target="_blank" title="html">
+              <div class="hex">
+                <i class="devicon-html5-plain devicon"></i>
+              </div>
+            </a>
+          </div>
+
+          <!-- Engines Row -->
+          <div class="section-title">Engines</div>
+          <div class="row">
+            <a
+              href="https://unrealengine.com"
+              target="_blank"
+              title="Unreal Engine"
+            >
+              <div class="hex">
+                <img
+                  src="logos/UnrealEngine.png"
+                  alt="Unreal Engine"
+                  class="custom-icon"
+                />
+              </div>
+            </a>
+            <a href="https://www.unity.com" target="_blank" title="Unity">
+              <div class="hex">
+                <i class="devicon-unity-original devicon"></i>
+              </div>
+            </a>
+            <a
+              href="https://www.wonderlandengine.com"
+              target="_blank"
+              title="Wonderland Engine"
+            >
+              <div class="hex">
+                <img
+                  src="logos/Wonderland.png"
+                  alt="Wonderland Engine"
+                  class="custom-icon"
+                />
+              </div>
+            </a>
+          </div>
+
+          <!-- Applications Row -->
+          <div class="section-title">Applications</div>
+          <div class="row">
+            <a href="https://www.reactjs.org" target="_blank" title="React">
+              <div class="hex">
+                <i class="devicon-react-original devicon"></i>
+              </div>
+            </a>
+            <a href="https://www.obsidian.com" target="_blank" title="Obsidian">
+              <div class="hex">
+                <img
+                  src="logos/Obsidian.png"
+                  alt="Obsidian"
+                  class="custom-icon"
+                />
+              </div>
+            </a>
+            <a href="https://www.Notion.com" target="_blank" title="Notion">
+              <div class="hex">
+                <img src="logos/Notion.png" alt="Notion" class="custom-icon" />
+              </div>
+            </a>
+            <a href="https://www.nodejs.org" target="_blank" title="Node.js">
+              <div class="hex">
+                <i class="devicon-nodejs-plain devicon"></i>
+              </div>
+            </a>
+            <a href="https://www.figma.com" target="_blank" title="Figma">
+              <div class="hex">
+                <i class="devicon-figma-plain devicon"></i>
+              </div>
+            </a>
+            <a href="https://www.balsamiq.com" target="_blank" title="Balsamiq">
+              <div class="hex">
+                <img
+                  src="logos/Balsamiq.png"
+                  alt="Balsamiq"
+                  class="custom-icon"
+                />
+              </div>
+            </a>
+            <a href="https://www.miro.com" target="_blank" title="Miro">
+              <div class="hex">
+                <img src="logos/Miro.png" alt="Miro" class="custom-icon" />
+              </div>
+            </a>
+            <a
+              href="https://www.microsoft.com/en-ca/microsoft-365/p/excel/cfq7ttc0pbmf"
+              target="_blank"
+              title="Excel"
+            >
+              <div class="hex">
+                <img src="logos/Excel.png" alt="Excel" class="custom-icon" />
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="accent-line"></div>
+
+      <!-- EDUCATION -->
+      <section id="education" class="section">
+        <h2>Education</h2>
+        <div class="education-grid">
+          <div class="education-box">
+            <div class="education-header">
+              <h3>Bachelor of Science, Computer Science</h3>
+              <span class="education-date">2024 - Present</span>
             </div>
+            <p class="education-institution">Simon Fraser University</p>
+            <p class="education-description">
+              Currently pursuing a Bachelor of Science in Computer Science, with a
+              focus on software engineering, human computer interactions and
+              graphic design. The curriculum provides hands-on experience with
+              coding, project management, and real-world applications of
+              programming concepts.
+            </p>
+          </div>
+          <div class="education-box">
+            <div class="education-header">
+              <h3>Associate of Science, with Honours</h3>
+              <span class="education-date">2022 - 2024</span>
+            </div>
+            <p class="education-institution">Douglas College</p>
+            <p class="education-description">
+              Completed an Associate of Science degree, building a strong
+              foundation in mathematics, natural sciences, and introductory
+              programming, which paved the way for advanced studies in computer
+              science. I graduated on the Dean's List, maintaining a high GPA and
+              earning recognition for academic excellence.
+            </p>
+          </div>
+          <div class="education-box">
+            <div class="education-header">
+              <h3>Project Management Certificate</h3>
+              <span class="education-date">2021</span>
+            </div>
+            <p class="education-institution">Simon Fraser University</p>
+            <p class="education-description">
+              Completed the Project Management Certificate at Simon Fraser
+              University, where I gained hands-on experience with project
+              management tools and techniques. The program covered key skills,
+              including project planning, risk management, team leadership, and
+              effective communication strategies. This training has equipped me
+              with the tools and knowledge to effectively oversee and execute
+              projects from start to finish, ensuring alignment with
+              organizational goals and facilitating collaborative success.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="accent-line"></div>
+
+      <!-- EXPERIENCE -->
+      <section id="experience" class="section">
+        <h2>Experience</h2>
+        <div class="experience-grid">
+          <div class="experience-box">
+            <div class="experience-header">
+              <h3>Etsy Entrepreneur</h3>
+              <span class="experience-date">August 2017 - May 2020</span>
+            </div>
+            <p class="experience-institution">Etsy</p>
+            <p class="experience-description">
+              As the sole owner and operator of a customizable product Etsy shop,
+              I managed every aspect of the business from start to finish. I
+              handled all advertising and marketing efforts, ensuring the shop
+              reached the right audience through social media and in-person events
+              like local markets. Each product, from shirts and bags to cups and
+              pillows, was thoughtfully planned, designed, and created by me to
+              reflect customer needs and trends. I organized and maintained the
+              shop's online presence, regularly updating listings, managing the
+              website, and coordinating sales. I also handled all payment
+              processing, budgeting, and inventory tracking to keep the business
+              running smoothly. Overseeing everything from design to delivery
+              equipped me with a wide range of skills in digital design,
+              production, e-commerce, and business management, all while
+              maintaining high standards of quality and customer satisfaction.
+            </p>
+          </div>
+
+          <div class="experience-box">
+            <div class="experience-header">
+              <h3>Parent Advisory Council</h3>
+              <span class="experience-date">August 2019 - Present</span>
+            </div>
+            <p class="experience-institution">Local School</p>
+            <p class="experience-description">
+              On the Parent Advisory Council, I served as Chair from 2020 to 2023
+              and currently hold the position of Treasurer. During my tenure as
+              Chair, I led meetings, organized activities and events, and acted as
+              a liaison between parents and school staff, ensuring open
+              communication and collaboration. As Treasurer, I am responsible for
+              drafting budgets, managing payments, and overseeing the council's
+              funds. In both roles, I have been actively involved in the school
+              community—helping to lead fundraising initiatives, bringing in
+              volunteers, and supporting various projects to enhance the school
+              environment for students, parents, and staff alike.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="accent-line"></div>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="section">
+        <h2>Projects</h2>
+        <div class="projects-grid">
+          <div class="project-box">
+            <div class="project-header">
+              <h3>Project Winter: Working Title</h3>
+              <span class="project-date">2024</span>
+            </div>
+            <p class="project-course">
+              <a href="iat210-researchessay.html">Research Essay</a>
+            </p>
+            <p class="project-description">
+              <em>Project Winter</em> is a multiplayer survival game that
+              innovatively combines traditional survival mechanics with social
+              deception elements, creating a psychologically complex and
+              emotionally charged experience. Set in a frozen wilderness, the game
+              challenges players to navigate trust, betrayal, and communication
+              under extreme pressure. Survivors must collaborate to achieve
+              objectives and secure rescue, while traitors covertly sabotage these
+              efforts, blurring the lines between allies and enemies. Key
+              mechanics such as truth serum and mass hysteria amplify the dynamics
+              of deception and mistrust, introducing layers of unpredictability
+              that heighten the stakes of each interaction. Drawing on
+              psychological and sociological theories of trust, deception, and
+              group dynamics, this essay examines how <em>Project Winter</em>
+              leverages its gameplay design to explore human behavior in
+              high-stress, high-risk environments. By intertwining survival
+              gameplay with the fragility of social trust, the game transcends
+              traditional genre boundaries, offering players a unique and
+              compelling exploration of interpersonal dynamics.
+            </p>
+          </div>
+
+          <div class="project-box">
+            <div class="project-header">
+              <h3>Open World Survival Craft</h3>
+              <span class="project-date">2024</span>
+            </div>
+            <p class="project-course">https://www.fab.com/sellers/OWSC</p>
+            <p class="project-description">
+              Created a template for an open-world survival asset pack using
+              Unreal Engine. This project focused on world-building, resource
+              gathering, and crafting mechanics to create a realistic, immersive
+              game environment.
+            </p>
+          </div>
+
+          <div class="project-box">
+            <div class="project-header">
+              <h3>Study Buddy</h3>
+              <span class="project-date">2024</span>
+            </div>
+            <p class="project-course">
+              Course: Software Engineering, Simon Fraser University
+            </p>
+            <p class="project-description">
+              Designed and developed a website to help students focus on their
+              studies, incorporating features such as scheduling tools, study
+              tips, and flashcard generation powered by AI. This project utilized
+              the Gemini AI API and Google Calendar API for enhanced
+              functionality.
+            </p>
+          </div>
+
+          <div class="project-box">
+            <div class="project-header">
+              <h3>VR Video Game Museum Exhibit</h3>
+              <span class="project-date">2024</span>
+            </div>
+            <p class="project-course">
+              Course: Applied Project in Computing Science, Douglas College
+            </p>
+            <p class="project-description">
+              Collaborative project between Douglas College (Canada) and
+              Universidad Tecnológica El Retoño (Mexico) to create a WebXR VR game
+              using Wonderland Engine. This exhibit allows users to explore video
+              game history in an interactive, immersive environment.
+            </p>
+            <div class="project-video">
+              <video controls width="100%">
+                <source src="media/VideoGameMuseum.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          <div class="project-box">
+            <div class="project-header">
+              <h3>VR Haunted House</h3>
+              <span class="project-date">2023</span>
+            </div>
+            <p class="project-course">
+              Course: Game Development, Douglas College
+            </p>
+            <p class="project-description">
+              Designed and developed a Haunted House VR game to give a fully
+              immersive user experience using Unreal Engine. This project explored
+              VR interactivity, lighting, and sound design to create an eerie
+              atmosphere for users.
+            </p>
+            <div class="project-video">
+              <video controls width="100%">
+                <source src="media/VideoHauntedHouse.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="accent-line"></div>
+
+      <!-- CONTACT ME -->
+      <section id="contact" class="section">
+        <h2>Contact Me</h2>
+        <p>
+          Feel free to reach out through LinkedIn or check out my work on GitHub!
+        </p>
+        <div class="contact-icons">
+          <a
+            href="https://github.com/TashaGandevia"
+            target="_blank"
+            title="GitHub"
+          >
+            <i class="devicon-github-original"></i>
           </a>
           <a
-            href="https://www.typescriptlang.org"
+            href="https://www.linkedin.com/in/Tasha-Gandevia/"
             target="_blank"
-            title="TypeScript"
+            title="LinkedIn"
           >
-            <div class="hex">
-              <i class="devicon-typescript-plain devicon"></i>
-            </div>
-          </a>
-          <a href="https://html.com/document/" target="_blank" title="html">
-            <div class="hex">
-              <i class="devicon-html5-plain devicon"></i>
-            </div>
+            <i class="devicon-linkedin-plain"></i>
           </a>
         </div>
+      </section>
+    </div><!-- end #page-content -->
 
-        <!-- Engines Row -->
-        <div class="section-title">Engines</div>
-        <div class="row">
-          <a
-            href="https://unrealengine.com"
-            target="_blank"
-            title="Unreal Engine"
-          >
-            <div class="hex">
-              <img
-                src="logos/UnrealEngine.png"
-                alt="Unreal Engine"
-                class="custom-icon"
-              />
-            </div>
-          </a>
-          <a href="https://www.unity.com" target="_blank" title="Unity">
-            <div class="hex">
-              <i class="devicon-unity-original devicon"></i>
-            </div>
-          </a>
-          <a
-            href="https://www.wonderlandengine.com"
-            target="_blank"
-            title="Wonderland Engine"
-          >
-            <div class="hex">
-              <img
-                src="logos/Wonderland.png"
-                alt="Wonderland Engine"
-                class="custom-icon"
-              />
-            </div>
-          </a>
-        </div>
-
-        <!-- Applications Row -->
-        <div class="section-title">Applications</div>
-        <div class="row">
-          <a href="https://www.reactjs.org" target="_blank" title="React">
-            <div class="hex">
-              <i class="devicon-react-original devicon"></i>
-            </div>
-          </a>
-          <a href="https://www.obsidian.com" target="_blank" title="Obsidian">
-            <div class="hex">
-              <img
-                src="logos/Obsidian.png"
-                alt="Obsidian"
-                class="custom-icon"
-              />
-            </div>
-          </a>
-          <a href="https://www.Notion.com" target="_blank" title="Notion">
-            <div class="hex">
-              <img src="logos/Notion.png" alt="Notion" class="custom-icon" />
-            </div>
-          </a>
-          <a href="https://www.nodejs.org" target="_blank" title="Node.js">
-            <div class="hex">
-              <i class="devicon-nodejs-plain devicon"></i>
-            </div>
-          </a>
-          <a href="https://www.figma.com" target="_blank" title="Figma">
-            <div class="hex">
-              <i class="devicon-figma-plain devicon"></i>
-            </div>
-          </a>
-          <a href="https://www.balsamiq.com" target="_blank" title="Balsamiq">
-            <div class="hex">
-              <img
-                src="logos/Balsamiq.png"
-                alt="Balsamiq"
-                class="custom-icon"
-              />
-            </div>
-          </a>
-          <a href="https://www.miro.com" target="_blank" title="Miro">
-            <div class="hex">
-              <img src="logos/Miro.png" alt="Miro" class="custom-icon" />
-            </div>
-          </a>
-          <a
-            href="https://www.microsoft.com/en-ca/microsoft-365/p/excel/cfq7ttc0pbmf"
-            target="_blank"
-            title="Excel"
-          >
-            <div class="hex">
-              <img src="logos/Excel.png" alt="Excel" class="custom-icon" />
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <div class="accent-line"></div>
-
-    <section id="education" class="section">
-      <h2>Education</h2>
-      <div class="education-grid">
-        <div class="education-box">
-          <div class="education-header">
-            <h3>Bachelor of Science, Computer Science</h3>
-            <span class="education-date">2024 - Present</span>
-          </div>
-          <p class="education-institution">Simon Fraser University</p>
-          <p class="education-description">
-            Currently pursuing a Bachelor of Science in Computer Science, with a
-            focus on software engineering, human computer interactions and
-            graphic design. The curriculum provides hands-on experience with
-            coding, project management, and real-world applications of
-            programming concepts.
-          </p>
-        </div>
-        <div class="education-box">
-          <div class="education-header">
-            <h3>Associate of Science, with Honours</h3>
-            <span class="education-date">2022 - 2024</span>
-          </div>
-          <p class="education-institution">Douglas College</p>
-          <p class="education-description">
-            Completed an Associate of Science degree, building a strong
-            foundation in mathematics, natural sciences, and introductory
-            programming, which paved the way for advanced studies in computer
-            science. I graduated on the Dean's List, maintaining a high GPA and
-            earning recognition for academic excellence.
-          </p>
-        </div>
-        <div class="education-box">
-          <div class="education-header">
-            <h3>Project Management Certificate</h3>
-            <span class="education-date">2021</span>
-          </div>
-          <p class="education-institution">Simon Fraser University</p>
-          <p class="education-description">
-            Completed the Project Management Certificate at Simon Fraser
-            University, where I gained hands-on experience with project
-            management tools and techniques. The program covered key skills,
-            including project planning, risk management, team leadership, and
-            effective communication strategies. This training has equipped me
-            with the tools and knowledge to effectively oversee and execute
-            projects from start to finish, ensuring alignment with
-            organizational goals and facilitating collaborative success.
-          </p>
-        </div>
-      </div>
-    </section>
-    <div class="accent-line"></div>
-    <!-- Experience Section -->
-    <section id="experience" class="section">
-      <h2>Experience</h2>
-      <div class="experience-grid">
-        <!-- Work Experience -->
-        <div class="experience-box">
-          <div class="experience-header">
-            <h3>Etsy Entrepreneur</h3>
-            <span class="experience-date">August 2017 - May 2020</span>
-          </div>
-          <p class="experience-institution">Etsy</p>
-          <p class="experience-description">
-            As the sole owner and operator of a customizable product Etsy shop,
-            I managed every aspect of the business from start to finish. I
-            handled all advertising and marketing efforts, ensuring the shop
-            reached the right audience through social media and in-person events
-            like local markets. Each product, from shirts and bags to cups and
-            pillows, was thoughtfully planned, designed, and created by me to
-            reflect customer needs and trends. I organized and maintained the
-            shop’s online presence, regularly updating listings, managing the
-            website, and coordinating sales. I also handled all payment
-            processing, budgeting, and inventory tracking to keep the business
-            running smoothly. Overseeing everything from design to delivery
-            equipped me with a wide range of skills in digital design,
-            production, e-commerce, and business management, all while
-            maintaining high standards of quality and customer satisfaction.
-          </p>
-        </div>
-
-        <!-- Volunteer Experience -->
-        <div class="experience-box">
-          <div class="experience-header">
-            <h3>Parent Advisory Council</h3>
-            <span class="experience-date">August 2019 - Present</span>
-          </div>
-          <p class="experience-institution">Local School</p>
-          <p class="experience-description">
-            On the Parent Advisory Council, I served as Chair from 2020 to 2023
-            and currently hold the position of Treasurer. During my tenure as
-            Chair, I led meetings, organized activities and events, and acted as
-            a liaison between parents and school staff, ensuring open
-            communication and collaboration. As Treasurer, I am responsible for
-            drafting budgets, managing payments, and overseeing the council’s
-            funds. In both roles, I have been actively involved in the school
-            community—helping to lead fundraising initiatives, bringing in
-            volunteers, and supporting various projects to enhance the school
-            environment for students, parents, and staff alike.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <div class="accent-line"></div>
-
-    <!-- Projects Section -->
-    <section id="projects" class="section">
-      <h2>Projects</h2>
-      <div class="projects-grid">
-        <div class="project-box">
-          <div class="project-header">
-            <h3>Project Winter: Working Title</h3>
-            <span class="project-date">2024</span>
-          </div>
-          <p class="project-course">
-            <a href="iat210-researchessay.html">Research Essay</a>
-          </p>
-          <p class="project-description">
-            <em>Project Winter</em> is a multiplayer survival game that
-            innovatively combines traditional survival mechanics with social
-            deception elements, creating a psychologically complex and
-            emotionally charged experience. Set in a frozen wilderness, the game
-            challenges players to navigate trust, betrayal, and communication
-            under extreme pressure. Survivors must collaborate to achieve
-            objectives and secure rescue, while traitors covertly sabotage these
-            efforts, blurring the lines between allies and enemies. Key
-            mechanics such as truth serum and mass hysteria amplify the dynamics
-            of deception and mistrust, introducing layers of unpredictability
-            that heighten the stakes of each interaction. Drawing on
-            psychological and sociological theories of trust, deception, and
-            group dynamics, this essay examines how <em>Project Winter</em>
-            leverages its gameplay design to explore human behavior in
-            high-stress, high-risk environments. By intertwining survival
-            gameplay with the fragility of social trust, the game transcends
-            traditional genre boundaries, offering players a unique and
-            compelling exploration of interpersonal dynamics.
-          </p>
-        </div>
-
-        <div class="project-box">
-          <div class="project-header">
-            <h3>Open World Survival Craft</h3>
-            <span class="project-date">2024</span>
-          </div>
-          <p class="project-course">https://www.fab.com/sellers/OWSC</p>
-          <p class="project-description">
-            Created a template for an open-world survival asset pack using
-            Unreal Engine. This project focused on world-building, resource
-            gathering, and crafting mechanics to create a realistic, immersive
-            game environment.
-          </p>
-        </div>
-        <div class="project-box">
-          <div class="project-header">
-            <h3>Study Buddy</h3>
-            <span class="project-date">2024</span>
-          </div>
-          <p class="project-course">
-            Course: Software Engineering, Simon Fraser University
-          </p>
-          <p class="project-description">
-            Designed and developed a website to help students focus on their
-            studies, incorporating features such as scheduling tools, study
-            tips, and flashcard generation powered by AI. This project utilized
-            the Gemini AI API and Google Calendar API for enhanced
-            functionality.
-          </p>
-        </div>
-        <div class="project-box">
-          <div class="project-header">
-            <h3>VR Video Game Museum Exhibit</h3>
-            <span class="project-date">2024</span>
-          </div>
-          <p class="project-course">
-            Course: Applied Project in Computing Science, Douglas College
-          </p>
-          <p class="project-description">
-            Collaborative project between Douglas College (Canada) and
-            Universidad Tecnológica El Retoño (Mexico) to create a WebXR VR game
-            using Wonderland Engine. This exhibit allows users to explore video
-            game history in an interactive, immersive environment.
-          </p>
-          <div class="project-video">
-            <video controls width="100%">
-              <source src="media/VideoGameMuseum.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-        <div class="project-box">
-          <div class="project-header">
-            <h3>VR Haunted House</h3>
-            <span class="project-date">2023</span>
-          </div>
-          <p class="project-course">
-            Course: Game Development, Douglas College
-          </p>
-          <p class="project-description">
-            Designed and developed a Haunted House VR game to give a fully
-            immersive user experience using Unreal Engine. This project explored
-            VR interactivity, lighting, and sound design to create an eerie
-            atmosphere for users.
-          </p>
-          <div class="project-video">
-            <video controls width="100%">
-              <source src="media/VideoHauntedHouse.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="accent-line"></div>
-
-    <!-- Contact Me Section -->
-    <section id="contact" class="section">
-      <h2>Contact Me</h2>
-      <p>
-        Feel free to reach out through LinkedIn or check out my work on GitHub!
-      </p>
-      <div class="contact-icons">
-        <a
-          href="https://github.com/TashaGandevia"
-          target="_blank"
-          title="GitHub"
-        >
-          <i class="devicon-github-original"></i>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/Tasha-Gandevia/"
-          target="_blank"
-          title="LinkedIn"
-        >
-          <i class="devicon-linkedin-plain"></i>
-        </a>
-      </div>
-    </section>
-
-    <!-- JavaScript for Active Navigation -->
     <script>
-      window.addEventListener("scroll", () => {
-        const sections = document.querySelectorAll(".section");
-        const navLinks = document.querySelectorAll("#navbar ul li a");
+      /* ===== CONSTELLATION ANIMATION ===== */
+      (function () {
+        const canvas = document.getElementById("constellation-canvas");
+        const ctx = canvas.getContext("2d");
 
+        const STAR_COUNT = 160;
+        const MAX_LINK_DIST = 130;
+        const MOUSE_PARALLAX = 0.022;
+
+        const STAR_COLORS = [
+          "255,255,255",
+          "196,181,253",   // soft lavender
+          "167,139,250",   // purple-bright
+          "153,246,228",   // soft teal
+          "94,234,212",    // teal-bright
+        ];
+
+        let mouse = { x: 0, y: 0 };
+        let stars = [];
+
+        function resize() {
+          canvas.width  = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        function createStar() {
+          const colorStr = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
+          return {
+            x:       Math.random() * canvas.width,
+            y:       Math.random() * canvas.height,
+            vx:      (Math.random() - 0.5) * 0.28,
+            vy:      (Math.random() - 0.5) * 0.28,
+            radius:  Math.random() * 1.6 + 0.4,
+            opacity: Math.random() * 0.55 + 0.25,
+            color:   colorStr,
+            depth:   Math.random(),        // 0 = near, 1 = far (affects parallax)
+            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            twinkleOffset: Math.random() * Math.PI * 2,
+          };
+        }
+
+        function initStars() {
+          stars = [];
+          for (let i = 0; i < STAR_COUNT; i++) {
+            stars.push(createStar());
+          }
+        }
+
+        let frame = 0;
+
+        function draw() {
+          frame++;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          const cx = canvas.width  / 2;
+          const cy = canvas.height / 2;
+          const mx = (mouse.x - cx) * MOUSE_PARALLAX;
+          const my = (mouse.y - cy) * MOUSE_PARALLAX;
+
+          for (let i = 0; i < stars.length; i++) {
+            const s = stars[i];
+
+            // drift
+            s.x += s.vx;
+            s.y += s.vy;
+
+            // wrap around canvas edges
+            if (s.x < -10)                 s.x = canvas.width  + 10;
+            if (s.x > canvas.width  + 10)  s.x = -10;
+            if (s.y < -10)                 s.y = canvas.height + 10;
+            if (s.y > canvas.height + 10)  s.y = -10;
+
+            // twinkle
+            const twinkle = Math.sin(frame * s.twinkleSpeed + s.twinkleOffset) * 0.15;
+            const alpha = Math.max(0.05, s.opacity + twinkle);
+
+            // parallax offset (near stars move more)
+            const px = s.x + mx * (1 - s.depth);
+            const py = s.y + my * (1 - s.depth);
+
+            // draw star
+            ctx.beginPath();
+            ctx.arc(px, py, s.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
+            ctx.fill();
+
+            // constellation lines to nearby stars
+            for (let j = i + 1; j < stars.length; j++) {
+              const t = stars[j];
+              const tx = t.x + mx * (1 - t.depth);
+              const ty = t.y + my * (1 - t.depth);
+
+              const dx = px - tx;
+              const dy = py - ty;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+
+              if (dist < MAX_LINK_DIST) {
+                const lineAlpha = (1 - dist / MAX_LINK_DIST) * 0.28;
+                // blend purple→teal based on average depth
+                const blend = (s.depth + t.depth) / 2;
+                const r = Math.round(139 + (20  - 139) * blend);
+                const g = Math.round(92  + (184 - 92)  * blend);
+                const b = Math.round(246 + (166 - 246) * blend);
+
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(tx, ty);
+                ctx.strokeStyle = `rgba(${r},${g},${b},${lineAlpha})`;
+                ctx.lineWidth = 0.7;
+                ctx.stroke();
+              }
+            }
+          }
+
+          requestAnimationFrame(draw);
+        }
+
+        window.addEventListener("resize", () => {
+          resize();
+          initStars();
+        });
+
+        window.addEventListener("mousemove", (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+
+        resize();
+        initStars();
+        draw();
+      })();
+
+      /* ===== ACTIVE NAVIGATION HIGHLIGHT ===== */
+      window.addEventListener("scroll", () => {
+        const sections  = document.querySelectorAll(".section");
+        const navLinks  = document.querySelectorAll("#navbar ul li a");
         let currentSection = "";
 
         sections.forEach((section) => {
-          const sectionTop = section.offsetTop;
+          const sectionTop    = section.offsetTop;
           const sectionHeight = section.clientHeight;
-
-          // Check if current section is within the viewport
           if (
             window.scrollY >= sectionTop - sectionHeight / 2 &&
-            window.scrollY < sectionTop + sectionHeight - sectionHeight / 2
+            window.scrollY <  sectionTop + sectionHeight - sectionHeight / 2
           ) {
             currentSection = section.getAttribute("id");
           }
