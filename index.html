@@ -505,12 +505,124 @@
         color: var(--teal-bright);
         text-shadow: 0 0 18px rgba(45, 212, 191, 0.55);
       }
+
+      /* ===== GAME (STELLAR DRIFT) ===== */
+      /* Canvas now captures the cursor for the ship, but every interactive
+         element (links, videos, scroll) sits above it via pointer-events. */
+      /* While near the top (the "play zone"), hide the native cursor so the
+         ship reads as your pointer. Restored once you scroll into content. */
+      body.game-zone,
+      body.game-zone a,
+      body.game-zone .hex {
+        cursor: none;
+      }
+
+      /* HUD — fixed top-left, fades out as you scroll into the content */
+      #game-hud {
+        position: fixed;
+        top: 70px;
+        left: 24px;
+        z-index: 900;
+        pointer-events: none;
+        font-family: Poppins, sans-serif;
+        color: var(--text-muted);
+        transition: opacity 0.4s ease;
+        user-select: none;
+      }
+
+      #game-hud .hud-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      #game-hud .hud-score {
+        color: var(--teal-bright);
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+      }
+
+      #game-hud .hud-best {
+        color: var(--purple-bright);
+      }
+
+      #game-hud .hud-shields {
+        display: flex;
+        gap: 5px;
+        margin-top: 8px;
+      }
+
+      #game-hud .pip {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--teal-bright);
+        box-shadow: 0 0 8px rgba(45, 212, 191, 0.7);
+        transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+      }
+
+      #game-hud .pip.empty {
+        background: rgba(148, 163, 184, 0.18);
+        box-shadow: none;
+        transform: scale(0.8);
+      }
+
+      #game-hud .hud-combo {
+        margin-top: 8px;
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        color: var(--purple-bright);
+        min-height: 14px;
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+
+      #game-hud .hud-combo.show {
+        opacity: 1;
+      }
+
+      /* The "move to fly" hint in the hero */
+      .game-hint {
+        margin-top: 26px;
+        font-size: 12px !important;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-muted) !important;
+        opacity: 0.65;
+        transition: opacity 0.6s ease;
+      }
+
+      .game-hint.hidden {
+        opacity: 0;
+      }
+
+      @media (pointer: coarse) {
+        #constellation-canvas { cursor: auto; }
+        #game-hud { display: none; }
+      }
     </style>
   </head>
 
   <body>
-    <!-- Constellation Background -->
+    <!-- Constellation Background / Stellar Drift game -->
     <canvas id="constellation-canvas"></canvas>
+
+    <!-- Game HUD -->
+    <div id="game-hud" aria-hidden="true">
+      <div class="hud-row">
+        <span>Score <span class="hud-score" id="hud-score">0</span></span>
+        <span>Best <span class="hud-best" id="hud-best">0</span></span>
+      </div>
+      <div class="hud-shields" id="hud-shields">
+        <span class="pip"></span>
+        <span class="pip"></span>
+        <span class="pip"></span>
+      </div>
+      <div class="hud-combo" id="hud-combo"></div>
+    </div>
 
     <div id="page-content">
       <!-- Navigation Bar -->
@@ -553,6 +665,7 @@
           I'm an avid gamer with a strong interest in game development, blending
           technology and creativity within the gaming world.
         </p>
+        <p class="game-hint" id="game-hint">✦ Move your cursor — fly through the stars</p>
         <div class="scroll-indicator">
           <span>Scroll</span>
           <div class="chevron"></div>
@@ -1004,136 +1117,504 @@
     </div><!-- end #page-content -->
 
     <script>
-      /* ===== CONSTELLATION ANIMATION ===== */
+      /* =====================================================================
+         STELLAR DRIFT — interactive background game
+         Your cursor is a ship. Real constellations drift across the sky with
+         lines that "dance". Weave between them for near-miss points; touching
+         a star or line costs a shield. The canvas keeps pointer-events:none,
+         so links, videos and scrolling are never blocked.
+         ===================================================================== */
       (function () {
         const canvas = document.getElementById("constellation-canvas");
         const ctx = canvas.getContext("2d");
 
-        const STAR_COUNT = 160;
-        const MAX_LINK_DIST = 130;
-        const MOUSE_PARALLAX = 0.022;
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+        const isCoarse = window.matchMedia("(pointer: coarse)").matches;
 
-        const STAR_COLORS = [
-          "255,255,255",
-          "196,181,253",   // soft lavender
-          "167,139,250",   // purple-bright
-          "153,246,228",   // soft teal
-          "94,234,212",    // teal-bright
+        // ---- HUD elements ----
+        const hud        = document.getElementById("game-hud");
+        const elScore    = document.getElementById("hud-score");
+        const elBest     = document.getElementById("hud-best");
+        const elShields  = document.getElementById("hud-shields");
+        const elCombo    = document.getElementById("hud-combo");
+        const elHint     = document.getElementById("game-hint");
+
+        // ---- Real constellation templates (normalized 0..1 + edge list) ----
+        const CONSTELLATIONS = [
+          {
+            name: "Orion",
+            stars: [
+              [0.22, 0.10], [0.74, 0.16],            // shoulders
+              [0.40, 0.48], [0.52, 0.52], [0.64, 0.56], // belt
+              [0.28, 0.92], [0.78, 0.88],            // feet
+            ],
+            edges: [[0,2],[1,4],[2,3],[3,4],[2,5],[4,6],[5,6]],
+          },
+          {
+            name: "the Big Dipper",
+            stars: [
+              [0.96, 0.12], [0.96, 0.46], [0.70, 0.54], [0.68, 0.22],
+              [0.46, 0.24], [0.26, 0.30], [0.06, 0.42],
+            ],
+            edges: [[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]],
+          },
+          {
+            name: "Cassiopeia",
+            stars: [
+              [0.04, 0.28], [0.27, 0.74], [0.50, 0.34], [0.73, 0.76], [0.96, 0.30],
+            ],
+            edges: [[0,1],[1,2],[2,3],[3,4]],
+          },
+          {
+            name: "Cygnus",
+            stars: [
+              [0.50, 0.04], [0.50, 0.50], [0.50, 0.96],
+              [0.14, 0.44], [0.86, 0.40],
+            ],
+            edges: [[0,1],[1,2],[3,1],[1,4]],
+          },
+          {
+            name: "Lyra",
+            stars: [
+              [0.50, 0.05], [0.30, 0.42], [0.70, 0.46],
+              [0.34, 0.86], [0.66, 0.88],
+            ],
+            edges: [[0,1],[0,2],[1,2],[1,3],[2,4],[3,4]],
+          },
+          {
+            name: "the Summer Triangle",
+            stars: [ [0.50, 0.06], [0.08, 0.84], [0.92, 0.80] ],
+            edges: [[0,1],[1,2],[2,0]],
+          },
         ];
 
-        let mouse = { x: 0, y: 0 };
-        let stars = [];
+        const PURPLE = [167, 139, 250];
+        const TEAL   = [45, 212, 191];
 
+        // ---- State ----
+        let W = 0, H = 0;
+        let frame = 0;
+        let bgStars = [];
+        let clusters = [];
+        let popups = [];
+        let mouse = { x: -999, y: -999, active: false, lastMove: -99999 };
+        let ship = { x: -999, y: -999, vx: 0, vy: 0, angle: 0, invuln: 0, flash: 0 };
+        let shake = 0;
+
+        let score = 0;
+        let displayScore = 0;
+        let best = parseInt(localStorage.getItem("stellarDriftBest") || "0", 10);
+        let shields = 3;
+        const MAX_SHIELDS = 3;
+        let combo = 0;
+        let comboTimer = 0;
+
+        const SHIP_R = 9;
+        const NEAR_BAND = 30;   // near-miss detection radius beyond the obstacle
+        const HERO_ZONE = () => Math.max(window.innerHeight * 0.7, 400);
+
+        elBest.textContent = best;
+
+        // ---- Setup ----
         function resize() {
-          canvas.width  = window.innerWidth;
-          canvas.height = window.innerHeight;
+          W = canvas.width = window.innerWidth;
+          H = canvas.height = window.innerHeight;
         }
 
-        function createStar() {
-          const colorStr = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
+        function makeBgStars() {
+          bgStars = [];
+          const count = Math.round((W * H) / 9000);
+          for (let i = 0; i < count; i++) {
+            bgStars.push({
+              x: Math.random() * W,
+              y: Math.random() * H,
+              vx: (Math.random() - 0.5) * 0.12,
+              vy: (Math.random() - 0.5) * 0.12,
+              r: Math.random() * 1.3 + 0.3,
+              base: Math.random() * 0.4 + 0.15,
+              tSpeed: Math.random() * 0.02 + 0.004,
+              tOff: Math.random() * Math.PI * 2,
+            });
+          }
+        }
+
+        function spawnCluster(offscreen) {
+          const tpl = CONSTELLATIONS[(Math.random() * CONSTELLATIONS.length) | 0];
+          const scale = Math.random() * 80 + 90; // bounding box px
+          const tint = Math.random() < 0.5 ? PURPLE : TEAL;
+
+          // start somewhere; if offscreen, push beyond an edge so it drifts in
+          let x = Math.random() * W;
+          let y = Math.random() * H;
+          if (offscreen) {
+            const edge = (Math.random() * 4) | 0;
+            if (edge === 0) { x = -scale; }
+            else if (edge === 1) { x = W + scale; }
+            else if (edge === 2) { y = -scale; }
+            else { y = H + scale; }
+          }
+
+          const speed = Math.random() * 0.25 + 0.12;
+          const dir = Math.random() * Math.PI * 2;
+
           return {
-            x:       Math.random() * canvas.width,
-            y:       Math.random() * canvas.height,
-            vx:      (Math.random() - 0.5) * 0.28,
-            vy:      (Math.random() - 0.5) * 0.28,
-            radius:  Math.random() * 1.6 + 0.4,
-            opacity: Math.random() * 0.55 + 0.25,
-            color:   colorStr,
-            depth:   Math.random(),        // 0 = near, 1 = far (affects parallax)
-            twinkleSpeed: Math.random() * 0.02 + 0.005,
-            twinkleOffset: Math.random() * Math.PI * 2,
+            tpl,
+            x, y, scale, tint,
+            rot: Math.random() * Math.PI * 2,
+            rotV: (Math.random() - 0.5) * 0.0035,
+            vx: Math.cos(dir) * speed,
+            vy: Math.sin(dir) * speed,
+            phase: Math.random() * Math.PI * 2,
+            glow: 0,        // 0..1 proximity charge
+            near: false,    // currently inside near-band (hysteresis)
+            scored: false,  // near-miss already awarded for this approach
+            touched: false, // collided during this approach
           };
         }
 
-        function initStars() {
-          stars = [];
-          for (let i = 0; i < STAR_COUNT; i++) {
-            stars.push(createStar());
+        function makeClusters() {
+          clusters = [];
+          const n = reduceMotion ? 5 : 6;
+          for (let i = 0; i < n; i++) clusters.push(spawnCluster(false));
+        }
+
+        // world-space points for a cluster
+        function clusterPoints(c) {
+          const cos = Math.cos(c.rot), sin = Math.sin(c.rot);
+          return c.tpl.stars.map(([nx, ny]) => {
+            const ox = (nx - 0.5) * c.scale;
+            const oy = (ny - 0.5) * c.scale;
+            return [c.x + ox * cos - oy * sin, c.y + ox * sin + oy * cos];
+          });
+        }
+
+        function pointSegDist(px, py, x1, y1, x2, y2) {
+          const dx = x2 - x1, dy = y2 - y1;
+          const len2 = dx * dx + dy * dy || 1;
+          let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+          t = Math.max(0, Math.min(1, t));
+          const cx = x1 + t * dx, cy = y1 + t * dy;
+          return Math.hypot(px - cx, py - cy);
+        }
+
+        // ---- Scoring helpers ----
+        function rgba(c, a) { return `rgba(${c[0]},${c[1]},${c[2]},${a})`; }
+
+        function addPopup(x, y, text, color) {
+          popups.push({ x, y, text, color, life: 70, max: 70 });
+        }
+
+        function renderShields() {
+          const pips = elShields.querySelectorAll(".pip");
+          pips.forEach((p, i) => {
+            p.classList.toggle("empty", i >= shields);
+          });
+        }
+
+        function loseShield() {
+          if (ship.invuln > 0) return;
+          shields--;
+          combo = 0;
+          comboTimer = 0;
+          ship.invuln = 80;
+          ship.flash = 20;
+          shake = 14;
+          renderShields();
+          if (shields <= 0) {
+            // bank the run, then reset — no blocking overlay
+            if (score > best) {
+              best = Math.round(score);
+              localStorage.setItem("stellarDriftBest", best);
+              elBest.textContent = best;
+            }
+            addPopup(ship.x, ship.y - 24, "RESET", PURPLE);
+            score = 0;
+            displayScore = 0;
+            shields = MAX_SHIELDS;
+            renderShields();
           }
         }
 
-        let frame = 0;
+        function nearMiss(c) {
+          combo++;
+          comboTimer = 150;
+          const bonus = 15 + combo * 5;
+          score += bonus;
+          const cx = c.x, cy = c.y;
+          addPopup(cx, cy, "✦ threaded " + c.tpl.name + "  +" + bonus, c.tint);
+          if (combo > 1) {
+            elCombo.textContent = "COMBO ×" + combo;
+            elCombo.classList.add("show");
+          }
+        }
 
-        function draw() {
+        // ---- Main loop ----
+        function frameStep() {
           frame++;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.clearRect(0, 0, W, H);
 
-          const cx = canvas.width  / 2;
-          const cy = canvas.height / 2;
-          const mx = (mouse.x - cx) * MOUSE_PARALLAX;
-          const my = (mouse.y - cy) * MOUSE_PARALLAX;
+          // screen shake
+          let sx = 0, sy = 0;
+          if (shake > 0.4) {
+            sx = (Math.random() - 0.5) * shake;
+            sy = (Math.random() - 0.5) * shake;
+            shake *= 0.86;
+          } else shake = 0;
+          ctx.save();
+          ctx.translate(sx, sy);
 
-          for (let i = 0; i < stars.length; i++) {
-            const s = stars[i];
-
-            // drift
-            s.x += s.vx;
-            s.y += s.vy;
-
-            // wrap around canvas edges
-            if (s.x < -10)                 s.x = canvas.width  + 10;
-            if (s.x > canvas.width  + 10)  s.x = -10;
-            if (s.y < -10)                 s.y = canvas.height + 10;
-            if (s.y > canvas.height + 10)  s.y = -10;
-
-            // twinkle
-            const twinkle = Math.sin(frame * s.twinkleSpeed + s.twinkleOffset) * 0.15;
-            const alpha = Math.max(0.05, s.opacity + twinkle);
-
-            // parallax offset (near stars move more)
-            const px = s.x + mx * (1 - s.depth);
-            const py = s.y + my * (1 - s.depth);
-
-            // draw star
+          // background starfield
+          for (const s of bgStars) {
+            s.x += s.vx; s.y += s.vy;
+            if (s.x < 0) s.x = W; else if (s.x > W) s.x = 0;
+            if (s.y < 0) s.y = H; else if (s.y > H) s.y = 0;
+            const a = Math.max(
+              0.04,
+              s.base + Math.sin(frame * s.tSpeed + s.tOff) * 0.12
+            );
             ctx.beginPath();
-            ctx.arc(px, py, s.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(220,225,255," + a + ")";
             ctx.fill();
+          }
 
-            // constellation lines to nearby stars
-            for (let j = i + 1; j < stars.length; j++) {
-              const t = stars[j];
-              const tx = t.x + mx * (1 - t.depth);
-              const ty = t.y + my * (1 - t.depth);
+          const playing = mouse.active && (frame - mouse.lastMove < 240);
 
-              const dx = px - tx;
-              const dy = py - ty;
-              const dist = Math.sqrt(dx * dx + dy * dy);
+          // update + draw ship
+          if (!reduceMotion && ship.x > -500) {
+            // ease toward cursor (glide)
+            const tx = mouse.x, ty = mouse.y;
+            const ax = (tx - ship.x) * 0.16;
+            const ay = (ty - ship.y) * 0.16;
+            ship.vx = ship.vx * 0.6 + ax;
+            ship.vy = ship.vy * 0.6 + ay;
+            ship.x += ship.vx;
+            ship.y += ship.vy;
+            const sp = Math.hypot(ship.vx, ship.vy);
+            if (sp > 0.4) ship.angle = Math.atan2(ship.vy, ship.vx);
+            if (ship.invuln > 0) ship.invuln--;
+            if (ship.flash > 0) ship.flash--;
+          }
 
-              if (dist < MAX_LINK_DIST) {
-                const lineAlpha = (1 - dist / MAX_LINK_DIST) * 0.28;
-                // blend purple→teal based on average depth
-                const blend = (s.depth + t.depth) / 2;
-                const r = Math.round(139 + (20  - 139) * blend);
-                const g = Math.round(92  + (184 - 92)  * blend);
-                const b = Math.round(246 + (166 - 246) * blend);
+          // update + draw clusters
+          for (const c of clusters) {
+            c.x += c.vx;
+            c.y += c.vy;
+            c.rot += c.rotV;
+            c.phase += 0.03;
 
-                ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(tx, ty);
-                ctx.strokeStyle = `rgba(${r},${g},${b},${lineAlpha})`;
-                ctx.lineWidth = 0.7;
-                ctx.stroke();
+            // respawn when fully off-screen
+            const m = c.scale;
+            if (c.x < -m || c.x > W + m || c.y < -m || c.y > H + m) {
+              Object.assign(c, spawnCluster(true));
+              continue;
+            }
+
+            const pts = clusterPoints(c);
+
+            // proximity test against ship
+            let minDist = Infinity;
+            let collided = false;
+            if (playing && !reduceMotion) {
+              for (const e of c.tpl.edges) {
+                const [a, b] = e;
+                const d = pointSegDist(
+                  ship.x, ship.y,
+                  pts[a][0], pts[a][1], pts[b][0], pts[b][1]
+                );
+                if (d < minDist) minDist = d;
               }
+              for (const p of pts) {
+                const d = Math.hypot(ship.x - p[0], ship.y - p[1]);
+                if (d < minDist) minDist = d;
+              }
+              if (minDist < SHIP_R + 3) collided = true;
+            }
+
+            // proximity charge (visual reaction)
+            const target = minDist < 140 ? 1 - minDist / 140 : 0;
+            c.glow += (target - c.glow) * 0.15;
+
+            // near-miss scoring with hysteresis
+            if (playing) {
+              if (collided && ship.invuln === 0) {
+                c.touched = true;
+                loseShield();
+              }
+              const inBand = minDist < SHIP_R + NEAR_BAND;
+              if (inBand && !c.near) {
+                c.near = true;
+                c.scored = false;
+                c.touched = collided;
+              } else if (!inBand && c.near) {
+                // left the band — award if threaded cleanly
+                if (!c.touched && !c.scored) nearMiss(c);
+                c.near = false;
+              }
+              if (inBand && collided) c.touched = true;
+            }
+
+            // ---- draw cluster ----
+            const baseLine = 0.16 + c.glow * 0.6;
+            const dance = 0.10 * Math.sin(c.phase);
+            for (const e of c.tpl.edges) {
+              const [a, b] = e;
+              const la = Math.max(0.05, baseLine + dance);
+              const grad = ctx.createLinearGradient(
+                pts[a][0], pts[a][1], pts[b][0], pts[b][1]
+              );
+              grad.addColorStop(0, rgba(c.tint, la));
+              grad.addColorStop(1, rgba(c.tint, la * 0.55));
+              ctx.beginPath();
+              ctx.moveTo(pts[a][0], pts[a][1]);
+              ctx.lineTo(pts[b][0], pts[b][1]);
+              ctx.strokeStyle = grad;
+              ctx.lineWidth = 1 + c.glow * 1.2;
+              ctx.stroke();
+            }
+            for (const p of pts) {
+              const tw = 0.6 + 0.4 * Math.sin(c.phase * 1.7 + p[0] * 0.05);
+              const r = 1.6 + c.glow * 1.6;
+              ctx.save();
+              ctx.shadowBlur = 8 + c.glow * 14;
+              ctx.shadowColor = rgba(c.tint, 0.8);
+              ctx.beginPath();
+              ctx.arc(p[0], p[1], r, 0, Math.PI * 2);
+              ctx.fillStyle = rgba(c.tint, Math.min(1, 0.7 * tw + c.glow * 0.4));
+              ctx.fill();
+              ctx.restore();
             }
           }
 
-          requestAnimationFrame(draw);
+          // draw ship on top
+          if (!reduceMotion && playing && ship.x > -500) {
+            drawShip();
+          }
+
+          // popups
+          for (let i = popups.length - 1; i >= 0; i--) {
+            const p = popups[i];
+            p.life--;
+            p.y -= 0.4;
+            if (p.life <= 0) { popups.splice(i, 1); continue; }
+            const a = p.life / p.max;
+            ctx.font = "600 13px Poppins, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillStyle = rgba(p.color, a);
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = rgba(p.color, a * 0.8);
+            ctx.fillText(p.text, p.x, p.y);
+            ctx.shadowBlur = 0;
+          }
+          ctx.textAlign = "start";
+
+          ctx.restore();
+
+          // ---- score / combo bookkeeping ----
+          if (playing) score += 0.08; // slow survival tick
+          if (comboTimer > 0) {
+            comboTimer--;
+            if (comboTimer === 0) {
+              combo = 0;
+              elCombo.classList.remove("show");
+            }
+          }
+          displayScore += (score - displayScore) * 0.2;
+          elScore.textContent = Math.round(displayScore);
+          if (score > best) {
+            best = Math.round(score);
+            elBest.textContent = best;
+          }
+
+          // fade the HUD as you scroll into the content
+          if (!isCoarse) {
+            const t = Math.min(1, window.scrollY / HERO_ZONE());
+            hud.style.opacity = (0.95 - t * 0.8).toFixed(2);
+            document.body.classList.toggle("game-zone", window.scrollY < HERO_ZONE() * 0.6);
+          }
+
+          requestAnimationFrame(frameStep);
         }
 
-        window.addEventListener("resize", () => {
-          resize();
-          initStars();
-        });
+        function drawShip() {
+          ctx.save();
+          ctx.translate(ship.x, ship.y);
+          ctx.rotate(ship.angle);
 
-        window.addEventListener("mousemove", (e) => {
-          mouse.x = e.clientX;
-          mouse.y = e.clientY;
-        });
+          // thruster glow
+          const sp = Math.min(1, Math.hypot(ship.vx, ship.vy) / 12);
+          const flameLen = 10 + sp * 22;
+          const fg = ctx.createLinearGradient(-SHIP_R, 0, -SHIP_R - flameLen, 0);
+          fg.addColorStop(0, "rgba(45,212,191,0.8)");
+          fg.addColorStop(1, "rgba(167,139,250,0)");
+          ctx.beginPath();
+          ctx.moveTo(-SHIP_R + 2, -3.5);
+          ctx.lineTo(-SHIP_R - flameLen, 0);
+          ctx.lineTo(-SHIP_R + 2, 3.5);
+          ctx.closePath();
+          ctx.fillStyle = fg;
+          ctx.fill();
 
+          // hull
+          const flashing = ship.flash > 0 && (ship.flash >> 1) % 2 === 0;
+          const hull = flashing ? "rgba(248,113,113,0.95)" : "rgba(45,212,191,0.95)";
+          ctx.shadowBlur = 16;
+          ctx.shadowColor = flashing ? "rgba(248,113,113,0.9)" : "rgba(45,212,191,0.85)";
+          ctx.beginPath();
+          ctx.moveTo(SHIP_R + 3, 0);
+          ctx.lineTo(-SHIP_R, -SHIP_R + 2);
+          ctx.lineTo(-SHIP_R + 4, 0);
+          ctx.lineTo(-SHIP_R, SHIP_R - 2);
+          ctx.closePath();
+          ctx.fillStyle = hull;
+          ctx.fill();
+
+          // cockpit
+          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.arc(1, 0, 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,255,0.95)";
+          ctx.fill();
+
+          // invuln ring
+          if (ship.invuln > 0) {
+            ctx.beginPath();
+            ctx.arc(0, 0, SHIP_R + 6, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(167,139,250," + (ship.invuln / 80) * 0.7 + ")";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        // ---- Events ----
+        window.addEventListener("resize", () => { resize(); makeBgStars(); });
+
+        function setMouse(x, y) {
+          mouse.x = x; mouse.y = y;
+          mouse.active = true;
+          mouse.lastMove = frame;
+          if (ship.x < -500) { ship.x = x; ship.y = y; }
+          if (elHint) elHint.classList.add("hidden");
+        }
+
+        window.addEventListener("mousemove", (e) => setMouse(e.clientX, e.clientY));
+        if (isCoarse) {
+          window.addEventListener("touchmove", (e) => {
+            const t = e.touches[0];
+            if (t) setMouse(t.clientX, t.clientY);
+          }, { passive: true });
+        }
+
+        // ---- Boot ----
         resize();
-        initStars();
-        draw();
+        makeBgStars();
+        makeClusters();
+        renderShields();
+        if (isCoarse && hud) hud.style.display = "none";
+        frameStep();
       })();
 
       /* ===== ACTIVE NAVIGATION HIGHLIGHT ===== */
