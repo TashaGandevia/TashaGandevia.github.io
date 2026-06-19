@@ -603,6 +603,181 @@
         #constellation-canvas { cursor: auto; }
         #game-hud { display: none; }
       }
+
+      /* ===== HAMBURGER BUTTON ===== */
+      .nav-brand {
+        display: none;
+        color: var(--teal-bright);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+
+      .nav-right {
+        position: absolute;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .nav-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+      }
+
+      .nav-toggle span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--text-muted);
+        border-radius: 2px;
+        transition: transform 0.28s ease, opacity 0.28s ease, background 0.28s ease;
+      }
+
+      .nav-toggle.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+        background: var(--teal-bright);
+      }
+      .nav-toggle.open span:nth-child(2) { opacity: 0; }
+      .nav-toggle.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+        background: var(--teal-bright);
+      }
+
+      /* ===== SECTION BREAKS ===== */
+      .section-break {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* break canvas — visible on mobile, hidden on desktop */
+      .break-canvas {
+        display: none;
+        width: 100%;
+        height: 180px;
+      }
+
+      /* ===== DESKTOP: canvas edge mask ===== */
+      @media (min-width: 1024px) {
+        #constellation-canvas {
+          -webkit-mask-image: linear-gradient(
+            to right,
+            black 0%,
+            black 26%,
+            transparent 33%,
+            transparent 67%,
+            black 74%,
+            black 100%
+          );
+          mask-image: linear-gradient(
+            to right,
+            black 0%,
+            black 26%,
+            transparent 33%,
+            transparent 67%,
+            black 74%,
+            black 100%
+          );
+        }
+      }
+
+      /* ===== TABLET (768–1023px) ===== */
+      @media (max-width: 1023px) {
+        .about-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        /* show break canvases, hide accent lines */
+        .accent-line { display: none; }
+        .break-canvas { display: block; }
+      }
+
+      /* ===== MOBILE (≤767px) ===== */
+      @media (max-width: 767px) {
+        /* --- Nav --- */
+        #navbar {
+          justify-content: space-between;
+          padding: 12px 16px;
+        }
+        .nav-brand { display: block; }
+        .nav-right {
+          position: static;
+          gap: 10px;
+        }
+        .nav-toggle { display: flex; }
+        .social-icons { position: static; }
+        .social-icons a { font-size: 18px; }
+
+        .nav-links {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background: rgba(8, 8, 26, 0.97);
+          border-bottom: 1px solid var(--border);
+          padding: 12px 0 18px;
+        }
+        .nav-links.open { display: block; }
+        .nav-links ul {
+          flex-direction: column;
+          align-items: center;
+          gap: 0;
+        }
+        .nav-links ul li a {
+          display: block;
+          padding: 11px 20px;
+          font-size: 15px;
+        }
+
+        /* --- Hero --- */
+        #home { padding: 90px 20px 70px; }
+        #home h1 { font-size: 36px; }
+        #home p  { font-size: 15px; max-width: 100%; }
+        .game-hint { display: none; }
+
+        /* --- Sections --- */
+        h2 { font-size: 28px; margin-bottom: 24px; }
+        .section { padding: 48px 16px; }
+
+        /* --- About grid: single column --- */
+        .about-grid { grid-template-columns: 1fr; }
+
+        /* --- Card headers: stack on small screens --- */
+        .education-header,
+        .experience-header,
+        .project-header {
+          flex-direction: column;
+          gap: 3px;
+        }
+        .education-date,
+        .experience-date,
+        .project-date { padding-top: 0; }
+        .education-header h3,
+        .experience-header h3,
+        .project-header h3 { font-size: 16px; }
+
+        /* --- Hex skills --- */
+        .hex { width: 72px; height: 72px; }
+        .hex .devicon { font-size: 34px; }
+        .custom-icon { width: 34px; height: 34px; }
+
+        /* --- Contact --- */
+        .contact-icons { gap: 32px; }
+        .contact-icons a { font-size: 38px; }
+
+        /* --- break canvases taller on phone --- */
+        .break-canvas { height: 160px; }
+      }
     </style>
   </head>
 
@@ -627,7 +802,8 @@
     <div id="page-content">
       <!-- Navigation Bar -->
       <nav id="navbar">
-        <div class="nav-links">
+        <a class="nav-brand" href="#home">TG</a>
+        <div class="nav-links" id="nav-links">
           <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -638,21 +814,18 @@
             <li><a href="#contact">Contact Me</a></li>
           </ul>
         </div>
-        <div class="social-icons">
-          <a
-            href="https://github.com/TashaGandevia"
-            target="_blank"
-            title="GitHub"
-          >
-            <i class="devicon-github-original"></i>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/Tasha-Gandevia/"
-            target="_blank"
-            title="LinkedIn"
-          >
-            <i class="devicon-linkedin-plain"></i>
-          </a>
+        <div class="nav-right">
+          <div class="social-icons">
+            <a href="https://github.com/TashaGandevia" target="_blank" title="GitHub">
+              <i class="devicon-github-original"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/Tasha-Gandevia/" target="_blank" title="LinkedIn">
+              <i class="devicon-linkedin-plain"></i>
+            </a>
+          </div>
+          <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </nav>
 
@@ -672,7 +845,7 @@
         </div>
       </section>
 
-      <div class="accent-line"></div>
+      <div class="section-break"><div class="accent-line"></div><canvas class="break-canvas" data-constellation="0"></canvas></div>
 
       <!-- ABOUT -->
       <section id="about" class="section">
@@ -732,7 +905,7 @@
         </div>
       </section>
 
-      <div class="accent-line"></div>
+      <div class="section-break"><div class="accent-line"></div><canvas class="break-canvas" data-constellation="1"></canvas></div>
 
       <!-- SKILLS -->
       <section id="skills" class="section">
@@ -870,7 +1043,7 @@
         </div>
       </section>
 
-      <div class="accent-line"></div>
+      <div class="section-break"><div class="accent-line"></div><canvas class="break-canvas" data-constellation="2"></canvas></div>
 
       <!-- EDUCATION -->
       <section id="education" class="section">
@@ -924,7 +1097,7 @@
         </div>
       </section>
 
-      <div class="accent-line"></div>
+      <div class="section-break"><div class="accent-line"></div><canvas class="break-canvas" data-constellation="3"></canvas></div>
 
       <!-- EXPERIENCE -->
       <section id="experience" class="section">
@@ -976,7 +1149,7 @@
         </div>
       </section>
 
-      <div class="accent-line"></div>
+      <div class="section-break"><div class="accent-line"></div><canvas class="break-canvas" data-constellation="4"></canvas></div>
 
       <!-- PROJECTS -->
       <section id="projects" class="section">
@@ -1089,7 +1262,7 @@
         </div>
       </section>
 
-      <div class="accent-line"></div>
+      <div class="section-break"><div class="accent-line"></div><canvas class="break-canvas" data-constellation="5"></canvas></div>
 
       <!-- CONTACT ME -->
       <section id="contact" class="section">
@@ -1117,6 +1290,55 @@
     </div><!-- end #page-content -->
 
     <script>
+      /* ===== SHARED CONSTELLATION DATA ===== */
+      const CONSTELLATION_DATA = [
+        {
+          name: "Orion",
+          stars: [
+            [0.22, 0.10], [0.74, 0.16],
+            [0.40, 0.48], [0.52, 0.52], [0.64, 0.56],
+            [0.28, 0.92], [0.78, 0.88],
+          ],
+          edges: [[0,2],[1,4],[2,3],[3,4],[2,5],[4,6],[5,6]],
+        },
+        {
+          name: "the Big Dipper",
+          stars: [
+            [0.96, 0.12], [0.96, 0.46], [0.70, 0.54], [0.68, 0.22],
+            [0.46, 0.24], [0.26, 0.30], [0.06, 0.42],
+          ],
+          edges: [[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]],
+        },
+        {
+          name: "Cassiopeia",
+          stars: [
+            [0.04, 0.28], [0.27, 0.74], [0.50, 0.34], [0.73, 0.76], [0.96, 0.30],
+          ],
+          edges: [[0,1],[1,2],[2,3],[3,4]],
+        },
+        {
+          name: "Cygnus",
+          stars: [
+            [0.50, 0.04], [0.50, 0.50], [0.50, 0.96],
+            [0.14, 0.44], [0.86, 0.40],
+          ],
+          edges: [[0,1],[1,2],[3,1],[1,4]],
+        },
+        {
+          name: "Lyra",
+          stars: [
+            [0.50, 0.05], [0.30, 0.42], [0.70, 0.46],
+            [0.34, 0.86], [0.66, 0.88],
+          ],
+          edges: [[0,1],[0,2],[1,2],[1,3],[2,4],[3,4]],
+        },
+        {
+          name: "the Summer Triangle",
+          stars: [ [0.50, 0.06], [0.08, 0.84], [0.92, 0.80] ],
+          edges: [[0,1],[1,2],[2,0]],
+        },
+      ];
+
       /* =====================================================================
          STELLAR DRIFT — interactive background game
          Your cursor is a ship. Real constellations drift across the sky with
@@ -1132,6 +1354,8 @@
           "(prefers-reduced-motion: reduce)"
         ).matches;
         const isCoarse = window.matchMedia("(pointer: coarse)").matches;
+        // ship disabled on touch and on viewports narrower than 1024px
+        function noShip() { return isCoarse || window.innerWidth < 1024; }
 
         // ---- HUD elements ----
         const hud        = document.getElementById("game-hud");
@@ -1142,53 +1366,7 @@
         const elHint     = document.getElementById("game-hint");
 
         // ---- Real constellation templates (normalized 0..1 + edge list) ----
-        const CONSTELLATIONS = [
-          {
-            name: "Orion",
-            stars: [
-              [0.22, 0.10], [0.74, 0.16],            // shoulders
-              [0.40, 0.48], [0.52, 0.52], [0.64, 0.56], // belt
-              [0.28, 0.92], [0.78, 0.88],            // feet
-            ],
-            edges: [[0,2],[1,4],[2,3],[3,4],[2,5],[4,6],[5,6]],
-          },
-          {
-            name: "the Big Dipper",
-            stars: [
-              [0.96, 0.12], [0.96, 0.46], [0.70, 0.54], [0.68, 0.22],
-              [0.46, 0.24], [0.26, 0.30], [0.06, 0.42],
-            ],
-            edges: [[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]],
-          },
-          {
-            name: "Cassiopeia",
-            stars: [
-              [0.04, 0.28], [0.27, 0.74], [0.50, 0.34], [0.73, 0.76], [0.96, 0.30],
-            ],
-            edges: [[0,1],[1,2],[2,3],[3,4]],
-          },
-          {
-            name: "Cygnus",
-            stars: [
-              [0.50, 0.04], [0.50, 0.50], [0.50, 0.96],
-              [0.14, 0.44], [0.86, 0.40],
-            ],
-            edges: [[0,1],[1,2],[3,1],[1,4]],
-          },
-          {
-            name: "Lyra",
-            stars: [
-              [0.50, 0.05], [0.30, 0.42], [0.70, 0.46],
-              [0.34, 0.86], [0.66, 0.88],
-            ],
-            edges: [[0,1],[0,2],[1,2],[1,3],[2,4],[3,4]],
-          },
-          {
-            name: "the Summer Triangle",
-            stars: [ [0.50, 0.06], [0.08, 0.84], [0.92, 0.80] ],
-            edges: [[0,1],[1,2],[2,0]],
-          },
-        ];
+        const CONSTELLATIONS = CONSTELLATION_DATA;
 
         const PURPLE = [167, 139, 250];
         const TEAL   = [45, 212, 191];
@@ -1489,7 +1667,7 @@
           }
 
           // draw ship on top
-          if (!reduceMotion && playing && ship.x > -500) {
+          if (!reduceMotion && !noShip() && playing && ship.x > -500) {
             drawShip();
           }
 
@@ -1529,7 +1707,7 @@
           }
 
           // fade the HUD as you scroll into the content
-          if (!isCoarse) {
+          if (!noShip()) {
             const t = Math.min(1, window.scrollY / HERO_ZONE());
             hud.style.opacity = (0.95 - t * 0.8).toFixed(2);
             document.body.classList.toggle("game-zone", window.scrollY < HERO_ZONE() * 0.6);
@@ -1615,6 +1793,175 @@
         renderShields();
         if (isCoarse && hud) hud.style.display = "none";
         frameStep();
+      })();
+
+      /* ===== BREAK CANVAS ANIMATION (tablet + mobile) ===== */
+      (function () {
+        if (window.matchMedia("(min-width: 1024px)").matches) return;
+
+        const PURPLE = [167, 139, 250];
+        const TEAL   = [45, 212, 191];
+
+        const canvases = document.querySelectorAll(".break-canvas");
+        if (!canvases.length) return;
+
+        const states = Array.from(canvases).map((canvas, idx) => {
+          const tpl  = CONSTELLATION_DATA[idx % CONSTELLATION_DATA.length];
+          const tint = idx % 2 === 0 ? TEAL : PURPLE;
+          const state = {
+            canvas, tpl, tint,
+            ctx: canvas.getContext("2d"),
+            stars: [],
+            cx: 0, cy: 0,
+            cvx: (Math.random() - 0.5) * 0.35,
+            cvy: (Math.random() - 0.5) * 0.18,
+            rot: Math.random() * Math.PI * 2,
+            rotV: (Math.random() - 0.5) * 0.003,
+            scale: 100,
+            phase: Math.random() * Math.PI * 2,
+            touch: null,
+          };
+
+          canvas.addEventListener("touchmove", (e) => {
+            const r = canvas.getBoundingClientRect();
+            const t = e.touches[0];
+            if (t) state.touch = { x: t.clientX - r.left, y: t.clientY - r.top };
+          }, { passive: true });
+
+          canvas.addEventListener("touchend", () => { state.touch = null; }, { passive: true });
+
+          return state;
+        });
+
+        function initAll() {
+          states.forEach((s) => {
+            const w = s.canvas.offsetWidth || window.innerWidth;
+            const h = s.canvas.offsetHeight || 160;
+            s.canvas.width  = w;
+            s.canvas.height = h;
+            s.cx    = w / 2;
+            s.cy    = h / 2;
+            s.scale = Math.min(w * 0.26, h * 0.72, 110);
+            s.stars = [];
+            const n = Math.round((w * h) / 2800);
+            for (let i = 0; i < n; i++) {
+              s.stars.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.14,
+                vy: (Math.random() - 0.5) * 0.14,
+                r:  Math.random() * 1.2 + 0.3,
+                base: Math.random() * 0.3 + 0.1,
+                tS: Math.random() * 0.02 + 0.005,
+                tO: Math.random() * Math.PI * 2,
+              });
+            }
+          });
+        }
+
+        let frame = 0;
+        function loop() {
+          frame++;
+          states.forEach((s) => {
+            const { canvas, ctx, tpl, tint, stars } = s;
+            const w = canvas.width, h = canvas.height;
+            if (!w || !h) return;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // background stars
+            for (const st of stars) {
+              st.x = (st.x + st.vx + w) % w;
+              st.y = (st.y + st.vy + h) % h;
+              const a = Math.max(0.04, st.base + Math.sin(frame * st.tS + st.tO) * 0.1);
+              ctx.beginPath();
+              ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(220,225,255,${a})`;
+              ctx.fill();
+            }
+
+            // constellation drift + touch attraction
+            s.phase += 0.022;
+            s.rot   += s.rotV;
+            if (s.touch) {
+              s.cvx += (s.touch.x - s.cx) * 0.0012;
+              s.cvy += (s.touch.y - s.cy) * 0.0012;
+            }
+            s.cvx *= 0.985;
+            s.cvy *= 0.985;
+            s.cx  += s.cvx;
+            s.cy  += s.cvy;
+
+            const pad = s.scale * 0.55;
+            if (s.cx < pad)       { s.cx = pad;       s.cvx =  Math.abs(s.cvx); }
+            if (s.cx > w - pad)   { s.cx = w - pad;   s.cvx = -Math.abs(s.cvx); }
+            if (s.cy < pad)       { s.cy = pad;       s.cvy =  Math.abs(s.cvy); }
+            if (s.cy > h - pad)   { s.cy = h - pad;   s.cvy = -Math.abs(s.cvy); }
+
+            // star positions
+            const cos = Math.cos(s.rot), sin = Math.sin(s.rot);
+            const pts = tpl.stars.map(([nx, ny]) => {
+              const ox = (nx - 0.5) * s.scale;
+              const oy = (ny - 0.5) * s.scale;
+              return [s.cx + ox * cos - oy * sin, s.cy + ox * sin + oy * cos];
+            });
+
+            // draw edges
+            const dance = 0.10 * Math.sin(s.phase);
+            for (const [a, b] of tpl.edges) {
+              ctx.beginPath();
+              ctx.moveTo(pts[a][0], pts[a][1]);
+              ctx.lineTo(pts[b][0], pts[b][1]);
+              ctx.strokeStyle = `rgba(${tint[0]},${tint[1]},${tint[2]},${0.28 + dance})`;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+
+            // draw stars
+            for (const p of pts) {
+              const tw = 0.7 + 0.3 * Math.sin(s.phase * 1.6 + p[0] * 0.05);
+              ctx.save();
+              ctx.shadowBlur = 10;
+              ctx.shadowColor = `rgba(${tint[0]},${tint[1]},${tint[2]},0.75)`;
+              ctx.beginPath();
+              ctx.arc(p[0], p[1], 1.8 + tw * 0.8, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(${tint[0]},${tint[1]},${tint[2]},${0.7 * tw})`;
+              ctx.fill();
+              ctx.restore();
+            }
+          });
+          requestAnimationFrame(loop);
+        }
+
+        window.addEventListener("resize", () => {
+          if (window.matchMedia("(min-width: 1024px)").matches) return;
+          initAll();
+        });
+
+        initAll();
+        loop();
+      })();
+
+      /* ===== HAMBURGER TOGGLE ===== */
+      (function () {
+        const btn   = document.getElementById("nav-toggle");
+        const links = document.getElementById("nav-links");
+        if (!btn || !links) return;
+
+        btn.addEventListener("click", () => {
+          const open = links.classList.toggle("open");
+          btn.classList.toggle("open", open);
+          btn.setAttribute("aria-expanded", open);
+        });
+
+        // close when a nav link is tapped
+        links.querySelectorAll("a").forEach((a) => {
+          a.addEventListener("click", () => {
+            links.classList.remove("open");
+            btn.classList.remove("open");
+            btn.setAttribute("aria-expanded", "false");
+          });
+        });
       })();
 
       /* ===== ACTIVE NAVIGATION HIGHLIGHT ===== */
