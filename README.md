@@ -1,23 +1,75 @@
-# TashaGandevia.github.io
-Personal Portfolio
+<div align="center">
 
-<h1 align="center">Hi 👋, I'm Tasha</h1>
-<h3 align="center">I have an Associate of Science degree and am currently a second-year Computer Science student pursuing a Bachelor of Science. I'm an avid gamer with a strong interest in game development, blending technology and creativity within the gaming world.</h3>
+# Tasha Gandevia — Portfolio
 
-<p align="left"> <img src="https://komarev.com/ghpvc/?username=tashagandevia&label=Profile%20views&color=0e75b6&style=flat" alt="profile views" /> </p>
+A constellation-themed personal portfolio: VR worlds, Unreal asset packs, and AI-powered web apps, all in one place.
 
-<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=TashaGandevia" alt="Trophy Case" /></a> </p>
+[![Live Site](https://img.shields.io/badge/Live-tashagandevia.github.io-66fcf1?style=flat-square&logo=github&logoColor=05070d)](https://tashagandevia.github.io)
+[![Made with HTML/CSS/JS](https://img.shields.io/badge/Built%20with-HTML%20%C2%B7%20CSS%20%C2%B7%20JS-b388ff?style=flat-square)](#tech)
+[![Hosted on GitHub Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-45a29e?style=flat-square&logo=githubpages&logoColor=white)](https://pages.github.com/)
 
-- I’m currently studying **at Simon Fraser University**
+</div>
 
-- I’m looking forward to working as **a game developer**
+---
 
-<h3 align="left">Connect with me:</h3>
-<p align="left">
-<a href="https://linkedin.com/in/tasha-gandevia" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="tasha gandevia" height="30" width="40" /></a>
-</p>
+## About
 
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://www.blender.org/" target="_blank" rel="noreferrer"> <img src="https://download.blender.org/branding/community/blender_community_badge_white.svg" alt="blender" width="40" height="40"/> </a> <a href="https://www.w3schools.com/cpp/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg" alt="cplusplus" width="40" height="40"/> </a> <a href="https://www.w3schools.com/css/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/> </a> <a href="https://www.figma.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/> </a> <a href="https://www.photoshop.com/en" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/photoshop/photoshop-line.svg" alt="photoshop" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a> <a href="https://www.qt.io/" target="_blank" rel="noreferrer"> <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Qt_logo_2016.svg" alt="qt" width="40" height="40"/> </a> <a href="https://reactjs.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/> </a> <a href="https://reactnative.dev/" target="_blank" rel="noreferrer"> <img src="https://reactnative.dev/img/header_logo.svg" alt="reactnative" width="40" height="40"/> </a> <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="typescript" width="40" height="40"/> </a> <a href="https://unity.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/unity3d/unity3d-icon.svg" alt="unity" width="40" height="40"/> </a> <a href="https://unrealengine.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/kenangundogan/fontisto/036b7eca71aab1bef8e6a0518f7329f13ed62f6b/icons/svg/brand/unreal-engine.svg" alt="unreal" width="40" height="40"/> </a> </p>
+I'm a Computer Science student at **Simon Fraser University** and an aspiring
+game developer who likes to blend technology and creativity. This site is where
+that work lives — from immersive VR experiences and Unreal Engine asset packs
+to AI-powered web apps.
 
-<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=tashagandevia&show_icons=true&locale=en&layout=compact" alt="tashagandevia" /></p>
+When I'm not coding, I'm usually chasing a new running medal, escaping an escape
+room (90%+ win rate), or losing a craft project to a glue mishap.
+
+## Features
+
+- **Animated hero** with a typewriter tagline and a live constellation background
+- **Categorized skills grid** — languages, game dev & XR, web, data & APIs, design, and tooling
+- **Timeline** layout for education and experience
+- **Project showcase** with embedded VR gameplay videos
+- Fully **responsive** with a mobile menu, scroll-reveal animations, and a sticky nav
+- No frameworks, no build step — just fast, hand-written static pages
+
+## Tech
+
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![Canvas API](https://img.shields.io/badge/Canvas-API-66fcf1?style=flat-square)
+
+Icons via [Devicon](https://devicon.dev/) · fonts via [Google Fonts](https://fonts.google.com/) (Orbitron + Poppins).
+
+## Project structure
+
+```
+Portfolio/
+├── index.html                 # Landing page (markup only)
+├── iat210-researchessay.html  # "Project Winter" research essay
+├── css/
+│   └── styles.css             # All styling, commented by section
+├── js/
+│   └── main.js                # Typewriter, scroll-reveal, nav, constellation
+└── assets/
+    ├── media/                 # Photos & gameplay videos
+    ├── logos/                 # Brand logos
+    └── favicon/               # Favicons & web manifest
+```
+
+## Run locally
+
+No dependencies or build tooling required — it's a static site.
+
+```bash
+# Option 1: open the file directly
+open index.html
+
+# Option 2: serve it (matches GitHub Pages behavior)
+python3 -m http.server 8000
+# then visit http://localhost:8000
+```
+
+## Connect
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Tasha%20Gandevia-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/Tasha-Gandevia/)
+[![GitHub](https://img.shields.io/badge/GitHub-TashaGandevia-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/TashaGandevia)
