@@ -30,12 +30,13 @@ window.addEventListener("scroll", () => {
 //     advances to the next. Speeds differ for type vs. delete. ---
 (function () {
   const words = [
-    "with Unreal",
+    "with Unreal Engine",
     "with Unity",
     "VR worlds",
     "with React",
-    "with AI",
-    "with U",
+    "with AI API's",
+    "with Wonderland Engine",
+      "with coffee and dreams"
   ];
   const el = document.getElementById("twWord");
   let w = 0, // current word index
