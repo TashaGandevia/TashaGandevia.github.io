@@ -1,12 +1,26 @@
 // Auto-update the footer copyright year.
 document.getElementById("year").textContent = new Date().getFullYear();
 
+// Respect the OS "reduce motion" setting. The looping animations below
+// (typewriter, constellation) check this and render a static result
+// instead. css/styles.css handles the CSS-driven animations.
+const reduceMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+
 // --- Mobile nav: toggle the dropdown, and close it after a tap ---
 const navToggle = document.getElementById("navToggle");
 const navLinks = document.getElementById("navLinks");
-navToggle.addEventListener("click", () => navLinks.classList.toggle("open"));
+// Keep aria-expanded in sync so screen readers announce the state.
+function setNavOpen(open) {
+  navLinks.classList.toggle("open", open);
+  navToggle.setAttribute("aria-expanded", String(open));
+}
+navToggle.addEventListener("click", () =>
+  setNavOpen(!navLinks.classList.contains("open"))
+);
 navLinks.querySelectorAll("a").forEach((a) =>
-  a.addEventListener("click", () => navLinks.classList.remove("open"))
+  a.addEventListener("click", () => setNavOpen(false))
 );
 
 // --- On scroll: add the navbar border, and highlight the nav
@@ -39,6 +53,11 @@ window.addEventListener("scroll", () => {
       "with coffee and dreams"
   ];
   const el = document.getElementById("twWord");
+  // Reduced motion: show the first phrase and skip the animation.
+  if (reduceMotion) {
+    el.textContent = words[0];
+    return;
+  }
   let w = 0, // current word index
     c = 0, // how many chars are currently shown
     deleting = false; // typing vs. erasing
@@ -98,15 +117,19 @@ document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
     }));
   }
   // Animation loop: move dots, bounce off edges, draw dots + links.
+  // Under reduced motion the dots are drawn once and never moved, so
+  // the background is a static constellation instead of a drifting one.
   function draw() {
     ctx.clearRect(0, 0, w, h);
     for (let i = 0; i < dots.length; i++) {
       const d = dots[i];
-      d.x += d.vx;
-      d.y += d.vy;
-      // Bounce off the canvas edges.
-      if (d.x < 0 || d.x > w) d.vx *= -1;
-      if (d.y < 0 || d.y > h) d.vy *= -1;
+      if (!reduceMotion) {
+        d.x += d.vx;
+        d.y += d.vy;
+        // Bounce off the canvas edges.
+        if (d.x < 0 || d.x > w) d.vx *= -1;
+        if (d.y < 0 || d.y > h) d.vy *= -1;
+      }
       ctx.beginPath();
       ctx.arc(d.x, d.y, 1.6, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(102, 252, 241, 0.6)";
@@ -126,9 +149,12 @@ document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
         }
       }
     }
-    requestAnimationFrame(draw);
+    if (!reduceMotion) requestAnimationFrame(draw);
   }
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", () => {
+    resize();
+    if (reduceMotion) draw(); // no loop running, so repaint by hand
+  });
   resize();
   draw();
 })();

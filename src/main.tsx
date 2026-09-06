@@ -1,0 +1,37 @@
+import { useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { projects, type Project } from './projects';
+import profile from './profile.json';
+import './styles.css';
+const github = 'https://github.com/TashaGandevia';
+const linkedin = 'https://www.linkedin.com/in/Tasha-Gandevia/';
+function Arrow() { return <span aria-hidden="true">↗</span>; }
+function ProjectArt({ id }: {
+    id: string;
+}) {
+    return <div className={`project-art ${id}`} aria-hidden="true">{id === 'healthcare' ? <><div className="connection-orbit"/><span className="device vr">VR<span>✧</span></span><span className="connection-dot"/><span className="device mobile">MOBILE<span>✦</span></span><span className="art-caption">TWO PERSPECTIVES. ONE SHARED WORLD.</span></> : <><div className="study-symbol">{'{'}<span>✧</span>{'}'}</div><div className="study-line"/><span className="art-caption">EXPLORE. PRACTISE. UNDERSTAND.</span></>}</div>;
+}
+function ProjectCard({ project: p }: {
+    project: Project;
+}) {
+    return <article className={`project-card ${p.featured ? 'featured' : ''}`}>
+   {p.video ? <video controls preload="metadata" aria-label={`${p.title} walkthrough`}><source src={p.video}/>Your browser does not support video. <a href={p.video}>Download walkthrough</a>.</video> : p.image ? <img className="project-image" src={p.image} alt="Project Winter gameplay" loading="lazy"/> : <ProjectArt id={p.id}/>}
+   <div className="project-body"><div className="project-meta"><span>{p.category}</span><span>{p.year}</span></div><h3>{p.title}</h3><div className="tags">{p.tags.map(tag => <span key={tag}>{tag}</span>)}</div><p className="project-context">{p.context}</p><p>{p.description}</p>{p.links && <div className="project-links">{p.links.map(link => <a key={link.url} href={link.url} {...(link.url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{link.label} <Arrow /></a>)}</div>}</div>
+ </article>;
+}
+function App() {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [filter, setFilter] = useState('All work');
+    const filters = ['All work', 'Games & XR', 'Web & UI', 'Writing'];
+    const visible = projects.filter(p => filter === 'All work' || p.category === filter);
+    return <><a className="skip-link" href="#main">Skip to content</a><header className="header"><a className="logo" href="#home" aria-label="Tasha Gandevia home">TG<span>✦</span></a><button className="menu-toggle" aria-expanded={menuOpen} aria-controls="navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Close' : 'Menu'} <span aria-hidden="true">{menuOpen ? '×' : '+'}</span></button><nav id="navigation" className={menuOpen ? 'open' : ''} aria-label="Main navigation" onKeyDown={e => { if (e.key === 'Escape')
+        setMenuOpen(false); }}>{[['Work', '#work'], ['About', '#about'], ['Experience', '#experience'], ['Contact', '#contact']].map(([label, href]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}</nav></header>
+ <main id="main"><section className="hero container" id="home"><div className="hero-copy"><p className="eyebrow">TASHA GANDEVIA <span> / </span> PORTFOLIO</p><h1>Building worlds.<br /><span>Creating<br className="desktop-break"/> experiences.</span></h1><p className="hero-description">Computer science student and aspiring game developer exploring VR, games, and interactive software.</p><div className="hero-actions"><a className="button primary" href="#work">Explore my work</a><a className="button secondary" href={github} target="_blank" rel="noopener noreferrer">GitHub <Arrow /></a></div><p className="hero-note"><span /> Computer Science · Simon Fraser University</p></div><div className="hero-art"><img src="assets/art/planet.png" alt="" fetchPriority="high"/></div></section>
+ <section className="container work section" id="work"><div className="section-heading"><div><p className="eyebrow">01 / EXPLORATIONS</p><h2><span aria-hidden="true">✧</span> Selected work</h2><p>Games, immersive experiences, and useful tools.</p></div><span className="section-note">ALWAYS SOMETHING NEW IN ORBIT</span></div><div className="filters" aria-label="Filter projects">{filters.map(f => <button key={f} aria-pressed={f === filter} onClick={() => setFilter(f)}>{f}{f === 'All work' && <span>{String(projects.length).padStart(2, '0')}</span>}</button>)}</div><div className="project-grid" aria-live="polite">{visible.map(p => <ProjectCard key={p.id} project={p}/>)}</div></section>
+ <section id="about" className="section container"><div className="section-heading"><div><p className="eyebrow">02 / BEHIND THE SCREEN</p><h2>A little about me</h2></div></div><div className="about-intro"><img src="assets/media/PhotoProfile.jpg" alt="Tasha Gandevia" loading="lazy"/><div><h3>Curiosity is the common thread.</h3><p>I'm a computer science student at Simon Fraser University and an aspiring game developer. I love bringing technology and creativity together—from shared VR worlds to interactive tools that make learning more hands-on.</p><p>Outside of building things, life is full of family, running, crafting, and figuring out the next escape-room puzzle.</p></div></div><div className="personal-grid">{profile.about.map(item => <article key={item.title}><img className={item.title === 'Family' || item.title === 'Passions' ? 'photo-full' : undefined} src={item.image} alt={item.title} loading="lazy"/><h3>{item.title}</h3><p>{item.description}</p></article>)}</div><div className="skills-heading"><h3>My toolkit</h3><p>The languages, engines, and tools I build with.</p></div><div className="skills-grid">{profile.skills.map(group => <div key={group.title}><h4>{group.title}</h4><div className="tags">{group.items.map(item => <span key={item}>{item}</span>)}</div></div>)}</div></section>
+ <section id="experience" className="section container"><div className="section-heading"><div><p className="eyebrow">03 / THE JOURNEY SO FAR</p><h2>Learning & doing</h2><p>A foundation in computing, creativity, and bringing people together.</p></div></div><div className="journey-grid">{([{ title: 'Education', items: profile.education }, { title: 'Experience', items: profile.experience }]).map(group => <div key={group.title}><h3 className="timeline-title">{group.title}</h3><div className="timeline">{group.items.map(item => <article key={item.title}><span className="timeline-date">{item.date}</span><h4>{item.title}</h4><p className="place">{item.place}</p><p>{item.description}</p></article>)}</div></div>)}</div></section>
+ <section id="contact" className="container contact"><p className="eyebrow">04 / MAKE CONTACT</p><span className="contact-star" aria-hidden="true">✧</span><h2>Good things start<br />with a conversation.</h2><p>Have a project in mind, a shared interest, or just want to say hello?<br />I'm always happy to connect.</p><div className="hero-actions"><a className="button primary" href={linkedin} target="_blank" rel="noopener noreferrer">Let's connect <Arrow /></a><a className="button secondary" href={github} target="_blank" rel="noopener noreferrer">Explore my GitHub <Arrow /></a></div></section></main><footer className="container"><a href="#home" className="logo" aria-label="Back to top">TG<span>✦</span></a><p>© {new Date().getFullYear()} Tasha Gandevia</p><p>Built with curiosity & caffeine <span aria-hidden="true">✧</span></p></footer></>;
+}
+createRoot(document.getElementById('root')!).render(<App />);
+
+

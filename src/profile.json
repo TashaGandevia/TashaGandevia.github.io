@@ -1,0 +1,136 @@
+{
+  "skills": [
+    {
+      "title": "Languages",
+      "items": [
+        "C++",
+        "C",
+        "C#",
+        "Java",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "SQL",
+        "Bash",
+        "HTML5",
+        "CSS3"
+      ]
+    },
+    {
+      "title": "Game Dev & XR",
+      "items": [
+        "Unreal",
+        "Unity",
+        "Wonderland",
+        "Blueprints",
+        "Three.js / WebXR",
+        "SDL",
+        "Multiplayer"
+      ]
+    },
+    {
+      "title": "Web & Mobile",
+      "items": [
+        "React",
+        "React Native",
+        "Next.js",
+        "Node.js",
+        "Express",
+        "Tailwind"
+      ]
+    },
+    {
+      "title": "Data & APIs",
+      "items": [
+        "MongoDB",
+        "PostgreSQL",
+        "MySQL",
+        "SQLite",
+        "Supabase",
+        "REST APIs",
+        "Gemini API",
+        "OpenAI / Claude"
+      ]
+    },
+    {
+      "title": "Design & 3D",
+      "items": [
+        "Figma",
+        "Photoshop",
+        "Illustrator",
+        "Adobe XD",
+        "Canva",
+        "Blender",
+        "Balsamiq",
+        "Miro"
+      ]
+    },
+    {
+      "title": "Tools & Workflow",
+      "items": [
+        "Git / GitHub",
+        "GitHub Actions",
+        "Docker",
+        "Linux",
+        "VS Code",
+        "Jira",
+        "Trello",
+        "Agile / Scrum",
+        "Obsidian",
+        "Notion",
+        "Excel"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "title": "Bachelor of Science, Computer Science",
+      "date": "2024 – Present",
+      "place": "Simon Fraser University",
+      "description": "Pursuing a B.Sc. in Computer Science with a focus on software engineering, human–computer interaction, and graphic design. Hands-on experience with coding, project management, and real-world applications of programming concepts. During my degree, I attended the Centre for Digital Media as a visiting student for a practicum."
+    },
+    {
+      "title": "Associate of Science, with Honours",
+      "date": "2022 – 2024",
+      "place": "Douglas College",
+      "description": "Built a strong foundation in mathematics, natural sciences, and introductory programming. Graduated on the Dean's List, maintaining a high GPA and earning recognition for academic excellence. Elective courses primarily focused on Game Development."
+    },
+    {
+      "title": "Project Management Certificate",
+      "date": "2021",
+      "place": "Simon Fraser University",
+      "description": "Gained hands-on experience with project management tools and techniques, covering project planning, risk management, team leadership, and effective communication strategies for executing projects from start to finish."
+    }
+  ],
+  "experience": [
+    {
+      "title": "Etsy Entrepreneur",
+      "date": "Aug 2017 – May 2020",
+      "place": "Etsy",
+      "description": "Sole owner and operator of a customizable product shop, managing every aspect end to end — advertising and marketing across social media and local markets, designing and producing each product, maintaining the online storefront, and handling payment processing, budgeting, and inventory. Built broad skills in digital design, production, e-commerce, and business management."
+    },
+    {
+      "title": "Parent Advisory Council",
+      "date": "Aug 2019 – Present",
+      "place": "Local School",
+      "description": "Served as Chair (2020–2023) and currently Treasurer. Led meetings, organized events, and acted as liaison between parents and staff. As Treasurer, I draft budgets, manage payments, and oversee the council's funds while supporting fundraising and community initiatives."
+    }
+  ],
+  "about": [
+    {
+      "image": "assets/media/PhotoFamily.jpg",
+      "title": "Family",
+      "description": "My family is organized chaos — a husband, two kids, two dogs, and a cat who thinks he's in charge. The kids keep us on our toes, the dogs alternate between protectors and snack thieves, and the cat is a world-class napper who tolerates us as long as the food keeps coming. Every day's an adventure in our kid-powered, pet-filled circus!"
+    },
+    {
+      "image": "assets/media/PhotoRunning.JPG",
+      "title": "Passions",
+      "description": "My life is a bit of a triathlon — swap cycling for paddleboarding, add family gaming marathons, and throw in a crafting session or two. With 30+ running medals from 5Ks to half marathons, I'm always one good race away from a podium…or a nice nap. When I'm not moving, I'm trying new crafts — usually ending up with more glue on me than on the project."
+    },
+    {
+      "image": "assets/media/PhotoEscapeRoom.jpg",
+      "title": "Escape Room Enthusiast",
+      "description": "My husband and I are escape room enthusiasts (some say addicts), having cleared every room in the Lower Mainland and Whistler, plus a few in Seattle. With a 90%+ success rate, we like to think we're pros — though we occasionally bring the kids for \"hard mode.\" Nothing says teamwork like convincing a 10-year-old not to press every button they see!"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node (no build step, but keep strays out)
+node_modules/
+
+dist/
